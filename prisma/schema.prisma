@@ -1,0 +1,54 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+    provider = "prisma-client-js"
+    output   = "../generated/prisma"
+}
+
+datasource db {
+    provider = "postgresql"
+    url      = env("DATABASE_URL")
+}
+
+model Account {
+    id        Int      @id @default(autoincrement())
+    code      String   @unique // e.g. "1000", "2000"
+    name      String   // e.g. "Cash", "Accounts Payable"
+    type      AccountType // Asset, Liability, Equity, Revenue, Expense
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    lines     JournalEntryLine[]
+
+    @@index([code])
+}
+
+enum AccountType {
+    ASSET
+    LIABILITY
+    EQUITY
+    REVENUE
+    EXPENSE
+}
+
+model JournalEntry {
+    id          Int      @id @default(autoincrement())
+    date        DateTime
+    description String
+    createdAt   DateTime @default(now())
+    updatedAt   DateTime @updatedAt
+
+    lines       JournalEntryLine[]
+}
+
+model JournalEntryLine {
+    id             Int      @id @default(autoincrement())
+    journalEntryId Int
+    accountId      Int
+    amount         Float    // Positive for debit, negative for credit (or separate fields, here we use one for simplicity or separate debit/credit fields. Let's use separate for better accounting practice).
+    isDebit        Boolean  // True if debit, False if credit
+
+    journalEntry   JournalEntry @relation(fields: [journalEntryId], references: [id], onDelete: Cascade)
+    account        Account      @relation(fields: [accountId], references: [id])
+}
