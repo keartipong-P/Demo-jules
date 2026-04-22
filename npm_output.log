@@ -1,33 +1,11 @@
 
-> accapp@0.1.0 dev /app
-> next dev --turbo
+> accapp@0.1.0 start /app
+> next start
 
-   ▲ Next.js 15.5.15 (Turbopack)
-   - Local:        http://localhost:3000
-   - Network:      http://192.168.0.2:3000
-   - Environments: .env
-
- ✓ Starting...
- ✓ Ready in 1517ms
- ○ Compiling / ...
- ✓ Compiled / in 10.4s
- GET / 200 in 11914ms
- ○ Compiling /api/trpc/[trpc] ...
- ✓ Compiled /api/trpc/[trpc] in 2.5s
- GET /api/trpc/account.getAll,journal.getAll?batch=1&input=%7B%220%22%3A%7B%22json%22%3Anull%2C%22meta%22%3A%7B%22values%22%3A%5B%22undefined%22%5D%2C%22v%22%3A1%7D%7D%2C%221%22%3A%7B%22json%22%3Anull%2C%22meta%22%3A%7B%22values%22%3A%5B%22undefined%22%5D%2C%22v%22%3A1%7D%7D%7D 200 in 2846ms
- GET /accounts 200 in 2447ms
- ○ Compiling /journal ...
-prisma:query SELECT "public"."Account"."id", "public"."Account"."code", "public"."Account"."name", "public"."Account"."type"::text, "public"."Account"."createdAt", "public"."Account"."updatedAt" FROM "public"."Account" WHERE 1=1 ORDER BY "public"."Account"."code" ASC OFFSET $1
-[TRPC] account.getAll took 261ms to execute
- GET /api/trpc/account.getAll?batch=1&input=%7B%220%22%3A%7B%22json%22%3Anull%2C%22meta%22%3A%7B%22values%22%3A%5B%22undefined%22%5D%2C%22v%22%3A1%7D%7D%7D 200 in 778ms
- ✓ Compiled /journal in 608ms
-prisma:query SELECT "public"."Account"."id", "public"."Account"."code", "public"."Account"."name", "public"."Account"."type"::text, "public"."Account"."createdAt", "public"."Account"."updatedAt" FROM "public"."Account" WHERE 1=1 ORDER BY "public"."Account"."code" ASC OFFSET $1
-[TRPC] account.getAll took 433ms to execute
-prisma:query SELECT "public"."JournalEntry"."id", "public"."JournalEntry"."date", "public"."JournalEntry"."description", "public"."JournalEntry"."createdAt", "public"."JournalEntry"."updatedAt" FROM "public"."JournalEntry" WHERE 1=1 ORDER BY "public"."JournalEntry"."date" DESC OFFSET $1
-[TRPC] journal.getAll took 464ms to execute
- GET /journal 200 in 813ms
- GET /api/trpc/account.getAll,journal.getAll?batch=1&input=%7B%220%22%3A%7B%22json%22%3Anull%2C%22meta%22%3A%7B%22values%22%3A%5B%22undefined%22%5D%2C%22v%22%3A1%7D%7D%2C%221%22%3A%7B%22json%22%3Anull%2C%22meta%22%3A%7B%22values%22%3A%5B%22undefined%22%5D%2C%22v%22%3A1%7D%7D%7D 200 in 137ms
-prisma:query SELECT "public"."JournalEntry"."id", "public"."JournalEntry"."date", "public"."JournalEntry"."description", "public"."JournalEntry"."createdAt", "public"."JournalEntry"."updatedAt" FROM "public"."JournalEntry" WHERE 1=1 ORDER BY "public"."JournalEntry"."date" DESC OFFSET $1
-[TRPC] journal.getAll took 249ms to execute
-prisma:query SELECT "public"."Account"."id", "public"."Account"."code", "public"."Account"."name", "public"."Account"."type"::text, "public"."Account"."createdAt", "public"."Account"."updatedAt" FROM "public"."Account" WHERE 1=1 ORDER BY "public"."Account"."code" ASC OFFSET $1
-[TRPC] account.getAll took 355ms to execute
+ ⨯ Failed to start server
+Error: listen EADDRINUSE: address already in use :::3000
+    at <unknown> (Error: listen EADDRINUSE: address already [TRPC] account.getAll took 230ms to execute
+[TRPC] journal.getAll took 230ms to execute
+[TRPC] reports.getTrialBalance took 17ms to execute
+[TRPC] account.getAll took 4ms to execute
+code 1.
