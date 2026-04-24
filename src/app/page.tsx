@@ -19,12 +19,14 @@ export default function DashboardPage() {
   if (accountsQuery.data && journalQuery.data) {
     const accountBalances: Record<number, number> = {};
 
-    // Calculate raw balance for each account based on debits/credits
+    // Calculate raw balance for each account based on debits/credits, only for APPROVED entries
     journalQuery.data.forEach((entry) => {
-      entry.lines.forEach((line) => {
-        const amt = line.isDebit ? line.amount : -line.amount;
-        accountBalances[line.accountId] = (accountBalances[line.accountId] || 0) + amt;
-      });
+      if (entry.status === "APPROVED") {
+        entry.lines.forEach((line) => {
+          const amt = line.isDebit ? line.amount : -line.amount;
+          accountBalances[line.accountId] = (accountBalances[line.accountId] || 0) + amt;
+        });
+      }
     });
 
     // Aggregate by account type

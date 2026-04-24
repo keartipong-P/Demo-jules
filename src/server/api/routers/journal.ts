@@ -40,10 +40,26 @@ export const journalRouter = createTRPCRouter({
         });
       }
 
+      // Check if period is closed
+      const period = await ctx.db.accountingPeriod.findFirst({
+        where: {
+          startDate: { lte: input.date },
+          endDate: { gte: input.date },
+        },
+      });
+
+      if (period?.isClosed) {
+        throw new TRPCError({
+          code: "FORBIDDEN",
+          message: "Cannot create entry in a closed accounting period.",
+        });
+      }
+
       return ctx.db.journalEntry.create({
         data: {
           date: input.date,
           description: input.description,
+          status: "PENDING",
           lines: {
             create: input.lines.map((line) => ({
               accountId: line.accountId,
@@ -52,6 +68,63 @@ export const journalRouter = createTRPCRouter({
             })),
           },
         },
+      });
+    }),
+
+  approve: publicProcedure
+    .input(z.object({ id: z.number() }))
+    .mutation(async ({ ctx, input }) => {
+      const entry = await ctx.db.journalEntry.findUnique({
+        where: { id: input.id },
+      });
+
+      if (!entry) {
+        throw new TRPCError({ code: "NOT_FOUND", message: "Journal entry not found" });
+      }
+
+      if (entry.status !== "PENDING") {
+        throw new TRPCError({ code: "BAD_REQUEST", message: "Only pending entries can be approved" });
+      }
+
+      // Check if period is closed
+      const period = await ctx.db.accountingPeriod.findFirst({
+        where: {
+          startDate: { lte: entry.date },
+          endDate: { gte: entry.date },
+        },
+      });
+
+      if (period?.isClosed) {
+        throw new TRPCError({
+          code: "FORBIDDEN",
+          message: "Cannot approve entry in a closed accounting period.",
+        });
+      }
+
+      return ctx.db.journalEntry.update({
+        where: { id: input.id },
+        data: { status: "APPROVED", rejectionReason: null },
+      });
+    }),
+
+  reject: publicProcedure
+    .input(z.object({ id: z.number(), reason: z.string().min(1) }))
+    .mutation(async ({ ctx, input }) => {
+      const entry = await ctx.db.journalEntry.findUnique({
+        where: { id: input.id },
+      });
+
+      if (!entry) {
+        throw new TRPCError({ code: "NOT_FOUND", message: "Journal entry not found" });
+      }
+
+      if (entry.status !== "PENDING") {
+        throw new TRPCError({ code: "BAD_REQUEST", message: "Only pending entries can be rejected" });
+      }
+
+      return ctx.db.journalEntry.update({
+        where: { id: input.id },
+        data: { status: "REJECTED", rejectionReason: input.reason },
       });
     }),
 

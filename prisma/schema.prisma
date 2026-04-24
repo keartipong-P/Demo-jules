@@ -32,14 +32,34 @@ enum AccountType {
     EXPENSE
 }
 
-model JournalEntry {
-    id          Int      @id @default(autoincrement())
-    date        DateTime
-    description String
-    createdAt   DateTime @default(now())
-    updatedAt   DateTime @updatedAt
+enum JournalEntryStatus {
+    DRAFT
+    PENDING
+    APPROVED
+    REJECTED
+    VOIDED
+}
 
-    lines       JournalEntryLine[]
+model AccountingPeriod {
+    id        Int      @id @default(autoincrement())
+    name      String   // e.g. "January 2024"
+    startDate DateTime
+    endDate   DateTime
+    isClosed  Boolean  @default(false)
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+}
+
+model JournalEntry {
+    id              Int      @id @default(autoincrement())
+    date            DateTime
+    description     String
+    status          JournalEntryStatus @default(PENDING)
+    rejectionReason String?
+    createdAt       DateTime @default(now())
+    updatedAt       DateTime @updatedAt
+
+    lines           JournalEntryLine[]
 }
 
 model JournalEntryLine {
@@ -51,4 +71,14 @@ model JournalEntryLine {
 
     journalEntry   JournalEntry @relation(fields: [journalEntryId], references: [id], onDelete: Cascade)
     account        Account      @relation(fields: [accountId], references: [id])
+}
+
+model AuditLog {
+    id        Int      @id @default(autoincrement())
+    action    String   // e.g. "APPROVE_JOURNAL", "CREATE_JOURNAL", "CLOSE_PERIOD"
+    entityId  Int      // ID of the affected entity
+    entityType String  // e.g. "JournalEntry", "AccountingPeriod"
+    userId    String?  // If we had authentication, this would be the user ID. Using "System" or Maker/Checker for now.
+    details   String?  // JSON string or text for extra info
+    createdAt DateTime @default(now())
 }

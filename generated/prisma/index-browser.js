@@ -130,10 +130,22 @@ exports.Prisma.AccountScalarFieldEnum = {
   updatedAt: 'updatedAt'
 };
 
+exports.Prisma.AccountingPeriodScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  startDate: 'startDate',
+  endDate: 'endDate',
+  isClosed: 'isClosed',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
 exports.Prisma.JournalEntryScalarFieldEnum = {
   id: 'id',
   date: 'date',
   description: 'description',
+  status: 'status',
+  rejectionReason: 'rejectionReason',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };
@@ -155,6 +167,11 @@ exports.Prisma.QueryMode = {
   default: 'default',
   insensitive: 'insensitive'
 };
+
+exports.Prisma.NullsOrder = {
+  first: 'first',
+  last: 'last'
+};
 exports.AccountType = exports.$Enums.AccountType = {
   ASSET: 'ASSET',
   LIABILITY: 'LIABILITY',
@@ -163,8 +180,17 @@ exports.AccountType = exports.$Enums.AccountType = {
   EXPENSE: 'EXPENSE'
 };
 
+exports.JournalEntryStatus = exports.$Enums.JournalEntryStatus = {
+  DRAFT: 'DRAFT',
+  PENDING: 'PENDING',
+  APPROVED: 'APPROVED',
+  REJECTED: 'REJECTED',
+  VOIDED: 'VOIDED'
+};
+
 exports.Prisma.ModelName = {
   Account: 'Account',
+  AccountingPeriod: 'AccountingPeriod',
   JournalEntry: 'JournalEntry',
   JournalEntryLine: 'JournalEntryLine'
 };

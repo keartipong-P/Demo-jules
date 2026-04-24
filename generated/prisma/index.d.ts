@@ -19,6 +19,11 @@ export type PrismaPromise<T> = $Public.PrismaPromise<T>
  */
 export type Account = $Result.DefaultSelection<Prisma.$AccountPayload>
 /**
+ * Model AccountingPeriod
+ *
+ */
+export type AccountingPeriod = $Result.DefaultSelection<Prisma.$AccountingPeriodPayload>
+/**
  * Model JournalEntry
  *
  */
@@ -43,11 +48,26 @@ export namespace $Enums {
 
 export type AccountType = (typeof AccountType)[keyof typeof AccountType]
 
+
+export const JournalEntryStatus: {
+  DRAFT: 'DRAFT',
+  PENDING: 'PENDING',
+  APPROVED: 'APPROVED',
+  REJECTED: 'REJECTED',
+  VOIDED: 'VOIDED'
+};
+
+export type JournalEntryStatus = (typeof JournalEntryStatus)[keyof typeof JournalEntryStatus]
+
 }
 
 export type AccountType = $Enums.AccountType
 
 export const AccountType: typeof $Enums.AccountType
+
+export type JournalEntryStatus = $Enums.JournalEntryStatus
+
+export const JournalEntryStatus: typeof $Enums.JournalEntryStatus
 
 /**
  * ##  Prisma Client ʲˢ
@@ -176,6 +196,16 @@ export class PrismaClient<
     * ```
     */
   get account(): Prisma.AccountDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.accountingPeriod`: Exposes CRUD operations for the **AccountingPeriod** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more AccountingPeriods
+    * const accountingPeriods = await prisma.accountingPeriod.findMany()
+    * ```
+    */
+  get accountingPeriod(): Prisma.AccountingPeriodDelegate<ExtArgs, ClientOptions>;
 
   /**
    * `prisma.journalEntry`: Exposes CRUD operations for the **JournalEntry** model.
@@ -638,6 +668,7 @@ export namespace Prisma {
 
   export const ModelName: {
     Account: 'Account',
+    AccountingPeriod: 'AccountingPeriod',
     JournalEntry: 'JournalEntry',
     JournalEntryLine: 'JournalEntryLine'
   };
@@ -658,7 +689,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "account" | "journalEntry" | "journalEntryLine"
+      modelProps: "account" | "accountingPeriod" | "journalEntry" | "journalEntryLine"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -733,6 +764,80 @@ export namespace Prisma {
           count: {
             args: Prisma.AccountCountArgs<ExtArgs>
             result: $Utils.Optional<AccountCountAggregateOutputType> | number
+          }
+        }
+      }
+      AccountingPeriod: {
+        payload: Prisma.$AccountingPeriodPayload<ExtArgs>
+        fields: Prisma.AccountingPeriodFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.AccountingPeriodFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AccountingPeriodPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.AccountingPeriodFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AccountingPeriodPayload>
+          }
+          findFirst: {
+            args: Prisma.AccountingPeriodFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AccountingPeriodPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.AccountingPeriodFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AccountingPeriodPayload>
+          }
+          findMany: {
+            args: Prisma.AccountingPeriodFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AccountingPeriodPayload>[]
+          }
+          create: {
+            args: Prisma.AccountingPeriodCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AccountingPeriodPayload>
+          }
+          createMany: {
+            args: Prisma.AccountingPeriodCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.AccountingPeriodCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AccountingPeriodPayload>[]
+          }
+          delete: {
+            args: Prisma.AccountingPeriodDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AccountingPeriodPayload>
+          }
+          update: {
+            args: Prisma.AccountingPeriodUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AccountingPeriodPayload>
+          }
+          deleteMany: {
+            args: Prisma.AccountingPeriodDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.AccountingPeriodUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.AccountingPeriodUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AccountingPeriodPayload>[]
+          }
+          upsert: {
+            args: Prisma.AccountingPeriodUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AccountingPeriodPayload>
+          }
+          aggregate: {
+            args: Prisma.AccountingPeriodAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateAccountingPeriod>
+          }
+          groupBy: {
+            args: Prisma.AccountingPeriodGroupByArgs<ExtArgs>
+            result: $Utils.Optional<AccountingPeriodGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.AccountingPeriodCountArgs<ExtArgs>
+            result: $Utils.Optional<AccountingPeriodCountAggregateOutputType> | number
           }
         }
       }
@@ -981,6 +1086,7 @@ export namespace Prisma {
   }
   export type GlobalOmitConfig = {
     account?: AccountOmit
+    accountingPeriod?: AccountingPeriodOmit
     journalEntry?: JournalEntryOmit
     journalEntryLine?: JournalEntryLineOmit
   }
@@ -2242,6 +2348,1061 @@ export namespace Prisma {
 
 
   /**
+   * Model AccountingPeriod
+   */
+
+  export type AggregateAccountingPeriod = {
+    _count: AccountingPeriodCountAggregateOutputType | null
+    _avg: AccountingPeriodAvgAggregateOutputType | null
+    _sum: AccountingPeriodSumAggregateOutputType | null
+    _min: AccountingPeriodMinAggregateOutputType | null
+    _max: AccountingPeriodMaxAggregateOutputType | null
+  }
+
+  export type AccountingPeriodAvgAggregateOutputType = {
+    id: number | null
+  }
+
+  export type AccountingPeriodSumAggregateOutputType = {
+    id: number | null
+  }
+
+  export type AccountingPeriodMinAggregateOutputType = {
+    id: number | null
+    name: string | null
+    startDate: Date | null
+    endDate: Date | null
+    isClosed: boolean | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type AccountingPeriodMaxAggregateOutputType = {
+    id: number | null
+    name: string | null
+    startDate: Date | null
+    endDate: Date | null
+    isClosed: boolean | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type AccountingPeriodCountAggregateOutputType = {
+    id: number
+    name: number
+    startDate: number
+    endDate: number
+    isClosed: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type AccountingPeriodAvgAggregateInputType = {
+    id?: true
+  }
+
+  export type AccountingPeriodSumAggregateInputType = {
+    id?: true
+  }
+
+  export type AccountingPeriodMinAggregateInputType = {
+    id?: true
+    name?: true
+    startDate?: true
+    endDate?: true
+    isClosed?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type AccountingPeriodMaxAggregateInputType = {
+    id?: true
+    name?: true
+    startDate?: true
+    endDate?: true
+    isClosed?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type AccountingPeriodCountAggregateInputType = {
+    id?: true
+    name?: true
+    startDate?: true
+    endDate?: true
+    isClosed?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type AccountingPeriodAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which AccountingPeriod to aggregate.
+     */
+    where?: AccountingPeriodWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     *
+     * Determine the order of AccountingPeriods to fetch.
+     */
+    orderBy?: AccountingPeriodOrderByWithRelationInput | AccountingPeriodOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     *
+     * Sets the start position
+     */
+    cursor?: AccountingPeriodWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Take `±n` AccountingPeriods from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Skip the first `n` AccountingPeriods.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     *
+     * Count returned AccountingPeriods
+    **/
+    _count?: true | AccountingPeriodCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     *
+     * Select which fields to average
+    **/
+    _avg?: AccountingPeriodAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     *
+     * Select which fields to sum
+    **/
+    _sum?: AccountingPeriodSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     *
+     * Select which fields to find the minimum value
+    **/
+    _min?: AccountingPeriodMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     *
+     * Select which fields to find the maximum value
+    **/
+    _max?: AccountingPeriodMaxAggregateInputType
+  }
+
+  export type GetAccountingPeriodAggregateType<T extends AccountingPeriodAggregateArgs> = {
+        [P in keyof T & keyof AggregateAccountingPeriod]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateAccountingPeriod[P]>
+      : GetScalarType<T[P], AggregateAccountingPeriod[P]>
+  }
+
+
+
+
+  export type AccountingPeriodGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: AccountingPeriodWhereInput
+    orderBy?: AccountingPeriodOrderByWithAggregationInput | AccountingPeriodOrderByWithAggregationInput[]
+    by: AccountingPeriodScalarFieldEnum[] | AccountingPeriodScalarFieldEnum
+    having?: AccountingPeriodScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: AccountingPeriodCountAggregateInputType | true
+    _avg?: AccountingPeriodAvgAggregateInputType
+    _sum?: AccountingPeriodSumAggregateInputType
+    _min?: AccountingPeriodMinAggregateInputType
+    _max?: AccountingPeriodMaxAggregateInputType
+  }
+
+  export type AccountingPeriodGroupByOutputType = {
+    id: number
+    name: string
+    startDate: Date
+    endDate: Date
+    isClosed: boolean
+    createdAt: Date
+    updatedAt: Date
+    _count: AccountingPeriodCountAggregateOutputType | null
+    _avg: AccountingPeriodAvgAggregateOutputType | null
+    _sum: AccountingPeriodSumAggregateOutputType | null
+    _min: AccountingPeriodMinAggregateOutputType | null
+    _max: AccountingPeriodMaxAggregateOutputType | null
+  }
+
+  type GetAccountingPeriodGroupByPayload<T extends AccountingPeriodGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<AccountingPeriodGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof AccountingPeriodGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], AccountingPeriodGroupByOutputType[P]>
+            : GetScalarType<T[P], AccountingPeriodGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type AccountingPeriodSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    name?: boolean
+    startDate?: boolean
+    endDate?: boolean
+    isClosed?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["accountingPeriod"]>
+
+  export type AccountingPeriodSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    name?: boolean
+    startDate?: boolean
+    endDate?: boolean
+    isClosed?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["accountingPeriod"]>
+
+  export type AccountingPeriodSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    name?: boolean
+    startDate?: boolean
+    endDate?: boolean
+    isClosed?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["accountingPeriod"]>
+
+  export type AccountingPeriodSelectScalar = {
+    id?: boolean
+    name?: boolean
+    startDate?: boolean
+    endDate?: boolean
+    isClosed?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type AccountingPeriodOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "startDate" | "endDate" | "isClosed" | "createdAt" | "updatedAt", ExtArgs["result"]["accountingPeriod"]>
+
+  export type $AccountingPeriodPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "AccountingPeriod"
+    objects: {}
+    scalars: $Extensions.GetPayloadResult<{
+      id: number
+      name: string
+      startDate: Date
+      endDate: Date
+      isClosed: boolean
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["accountingPeriod"]>
+    composites: {}
+  }
+
+  type AccountingPeriodGetPayload<S extends boolean | null | undefined | AccountingPeriodDefaultArgs> = $Result.GetResult<Prisma.$AccountingPeriodPayload, S>
+
+  type AccountingPeriodCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<AccountingPeriodFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: AccountingPeriodCountAggregateInputType | true
+    }
+
+  export interface AccountingPeriodDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['AccountingPeriod'], meta: { name: 'AccountingPeriod' } }
+    /**
+     * Find zero or one AccountingPeriod that matches the filter.
+     * @param {AccountingPeriodFindUniqueArgs} args - Arguments to find a AccountingPeriod
+     * @example
+     * // Get one AccountingPeriod
+     * const accountingPeriod = await prisma.accountingPeriod.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends AccountingPeriodFindUniqueArgs>(args: SelectSubset<T, AccountingPeriodFindUniqueArgs<ExtArgs>>): Prisma__AccountingPeriodClient<$Result.GetResult<Prisma.$AccountingPeriodPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one AccountingPeriod that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {AccountingPeriodFindUniqueOrThrowArgs} args - Arguments to find a AccountingPeriod
+     * @example
+     * // Get one AccountingPeriod
+     * const accountingPeriod = await prisma.accountingPeriod.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends AccountingPeriodFindUniqueOrThrowArgs>(args: SelectSubset<T, AccountingPeriodFindUniqueOrThrowArgs<ExtArgs>>): Prisma__AccountingPeriodClient<$Result.GetResult<Prisma.$AccountingPeriodPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first AccountingPeriod that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AccountingPeriodFindFirstArgs} args - Arguments to find a AccountingPeriod
+     * @example
+     * // Get one AccountingPeriod
+     * const accountingPeriod = await prisma.accountingPeriod.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends AccountingPeriodFindFirstArgs>(args?: SelectSubset<T, AccountingPeriodFindFirstArgs<ExtArgs>>): Prisma__AccountingPeriodClient<$Result.GetResult<Prisma.$AccountingPeriodPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first AccountingPeriod that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AccountingPeriodFindFirstOrThrowArgs} args - Arguments to find a AccountingPeriod
+     * @example
+     * // Get one AccountingPeriod
+     * const accountingPeriod = await prisma.accountingPeriod.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends AccountingPeriodFindFirstOrThrowArgs>(args?: SelectSubset<T, AccountingPeriodFindFirstOrThrowArgs<ExtArgs>>): Prisma__AccountingPeriodClient<$Result.GetResult<Prisma.$AccountingPeriodPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more AccountingPeriods that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AccountingPeriodFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all AccountingPeriods
+     * const accountingPeriods = await prisma.accountingPeriod.findMany()
+     *
+     * // Get first 10 AccountingPeriods
+     * const accountingPeriods = await prisma.accountingPeriod.findMany({ take: 10 })
+     *
+     * // Only select the `id`
+     * const accountingPeriodWithIdOnly = await prisma.accountingPeriod.findMany({ select: { id: true } })
+     *
+     */
+    findMany<T extends AccountingPeriodFindManyArgs>(args?: SelectSubset<T, AccountingPeriodFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AccountingPeriodPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a AccountingPeriod.
+     * @param {AccountingPeriodCreateArgs} args - Arguments to create a AccountingPeriod.
+     * @example
+     * // Create one AccountingPeriod
+     * const AccountingPeriod = await prisma.accountingPeriod.create({
+     *   data: {
+     *     // ... data to create a AccountingPeriod
+     *   }
+     * })
+     *
+     */
+    create<T extends AccountingPeriodCreateArgs>(args: SelectSubset<T, AccountingPeriodCreateArgs<ExtArgs>>): Prisma__AccountingPeriodClient<$Result.GetResult<Prisma.$AccountingPeriodPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many AccountingPeriods.
+     * @param {AccountingPeriodCreateManyArgs} args - Arguments to create many AccountingPeriods.
+     * @example
+     * // Create many AccountingPeriods
+     * const accountingPeriod = await prisma.accountingPeriod.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *
+     */
+    createMany<T extends AccountingPeriodCreateManyArgs>(args?: SelectSubset<T, AccountingPeriodCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many AccountingPeriods and returns the data saved in the database.
+     * @param {AccountingPeriodCreateManyAndReturnArgs} args - Arguments to create many AccountingPeriods.
+     * @example
+     * // Create many AccountingPeriods
+     * const accountingPeriod = await prisma.accountingPeriod.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *
+     * // Create many AccountingPeriods and only return the `id`
+     * const accountingPeriodWithIdOnly = await prisma.accountingPeriod.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     *
+     */
+    createManyAndReturn<T extends AccountingPeriodCreateManyAndReturnArgs>(args?: SelectSubset<T, AccountingPeriodCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AccountingPeriodPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a AccountingPeriod.
+     * @param {AccountingPeriodDeleteArgs} args - Arguments to delete one AccountingPeriod.
+     * @example
+     * // Delete one AccountingPeriod
+     * const AccountingPeriod = await prisma.accountingPeriod.delete({
+     *   where: {
+     *     // ... filter to delete one AccountingPeriod
+     *   }
+     * })
+     *
+     */
+    delete<T extends AccountingPeriodDeleteArgs>(args: SelectSubset<T, AccountingPeriodDeleteArgs<ExtArgs>>): Prisma__AccountingPeriodClient<$Result.GetResult<Prisma.$AccountingPeriodPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one AccountingPeriod.
+     * @param {AccountingPeriodUpdateArgs} args - Arguments to update one AccountingPeriod.
+     * @example
+     * // Update one AccountingPeriod
+     * const accountingPeriod = await prisma.accountingPeriod.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     *
+     */
+    update<T extends AccountingPeriodUpdateArgs>(args: SelectSubset<T, AccountingPeriodUpdateArgs<ExtArgs>>): Prisma__AccountingPeriodClient<$Result.GetResult<Prisma.$AccountingPeriodPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more AccountingPeriods.
+     * @param {AccountingPeriodDeleteManyArgs} args - Arguments to filter AccountingPeriods to delete.
+     * @example
+     * // Delete a few AccountingPeriods
+     * const { count } = await prisma.accountingPeriod.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     *
+     */
+    deleteMany<T extends AccountingPeriodDeleteManyArgs>(args?: SelectSubset<T, AccountingPeriodDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more AccountingPeriods.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AccountingPeriodUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many AccountingPeriods
+     * const accountingPeriod = await prisma.accountingPeriod.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     *
+     */
+    updateMany<T extends AccountingPeriodUpdateManyArgs>(args: SelectSubset<T, AccountingPeriodUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more AccountingPeriods and returns the data updated in the database.
+     * @param {AccountingPeriodUpdateManyAndReturnArgs} args - Arguments to update many AccountingPeriods.
+     * @example
+     * // Update many AccountingPeriods
+     * const accountingPeriod = await prisma.accountingPeriod.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *
+     * // Update zero or more AccountingPeriods and only return the `id`
+     * const accountingPeriodWithIdOnly = await prisma.accountingPeriod.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     *
+     */
+    updateManyAndReturn<T extends AccountingPeriodUpdateManyAndReturnArgs>(args: SelectSubset<T, AccountingPeriodUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AccountingPeriodPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one AccountingPeriod.
+     * @param {AccountingPeriodUpsertArgs} args - Arguments to update or create a AccountingPeriod.
+     * @example
+     * // Update or create a AccountingPeriod
+     * const accountingPeriod = await prisma.accountingPeriod.upsert({
+     *   create: {
+     *     // ... data to create a AccountingPeriod
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the AccountingPeriod we want to update
+     *   }
+     * })
+     */
+    upsert<T extends AccountingPeriodUpsertArgs>(args: SelectSubset<T, AccountingPeriodUpsertArgs<ExtArgs>>): Prisma__AccountingPeriodClient<$Result.GetResult<Prisma.$AccountingPeriodPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of AccountingPeriods.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AccountingPeriodCountArgs} args - Arguments to filter AccountingPeriods to count.
+     * @example
+     * // Count the number of AccountingPeriods
+     * const count = await prisma.accountingPeriod.count({
+     *   where: {
+     *     // ... the filter for the AccountingPeriods we want to count
+     *   }
+     * })
+    **/
+    count<T extends AccountingPeriodCountArgs>(
+      args?: Subset<T, AccountingPeriodCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], AccountingPeriodCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a AccountingPeriod.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AccountingPeriodAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends AccountingPeriodAggregateArgs>(args: Subset<T, AccountingPeriodAggregateArgs>): Prisma.PrismaPromise<GetAccountingPeriodAggregateType<T>>
+
+    /**
+     * Group by AccountingPeriod.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AccountingPeriodGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     *
+    **/
+    groupBy<
+      T extends AccountingPeriodGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: AccountingPeriodGroupByArgs['orderBy'] }
+        : { orderBy?: AccountingPeriodGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, AccountingPeriodGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetAccountingPeriodGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the AccountingPeriod model
+   */
+  readonly fields: AccountingPeriodFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for AccountingPeriod.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__AccountingPeriodClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the AccountingPeriod model
+   */
+  interface AccountingPeriodFieldRefs {
+    readonly id: FieldRef<"AccountingPeriod", 'Int'>
+    readonly name: FieldRef<"AccountingPeriod", 'String'>
+    readonly startDate: FieldRef<"AccountingPeriod", 'DateTime'>
+    readonly endDate: FieldRef<"AccountingPeriod", 'DateTime'>
+    readonly isClosed: FieldRef<"AccountingPeriod", 'Boolean'>
+    readonly createdAt: FieldRef<"AccountingPeriod", 'DateTime'>
+    readonly updatedAt: FieldRef<"AccountingPeriod", 'DateTime'>
+  }
+
+
+  // Custom InputTypes
+  /**
+   * AccountingPeriod findUnique
+   */
+  export type AccountingPeriodFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AccountingPeriod
+     */
+    select?: AccountingPeriodSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AccountingPeriod
+     */
+    omit?: AccountingPeriodOmit<ExtArgs> | null
+    /**
+     * Filter, which AccountingPeriod to fetch.
+     */
+    where: AccountingPeriodWhereUniqueInput
+  }
+
+  /**
+   * AccountingPeriod findUniqueOrThrow
+   */
+  export type AccountingPeriodFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AccountingPeriod
+     */
+    select?: AccountingPeriodSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AccountingPeriod
+     */
+    omit?: AccountingPeriodOmit<ExtArgs> | null
+    /**
+     * Filter, which AccountingPeriod to fetch.
+     */
+    where: AccountingPeriodWhereUniqueInput
+  }
+
+  /**
+   * AccountingPeriod findFirst
+   */
+  export type AccountingPeriodFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AccountingPeriod
+     */
+    select?: AccountingPeriodSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AccountingPeriod
+     */
+    omit?: AccountingPeriodOmit<ExtArgs> | null
+    /**
+     * Filter, which AccountingPeriod to fetch.
+     */
+    where?: AccountingPeriodWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     *
+     * Determine the order of AccountingPeriods to fetch.
+     */
+    orderBy?: AccountingPeriodOrderByWithRelationInput | AccountingPeriodOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     *
+     * Sets the position for searching for AccountingPeriods.
+     */
+    cursor?: AccountingPeriodWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Take `±n` AccountingPeriods from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Skip the first `n` AccountingPeriods.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     *
+     * Filter by unique combinations of AccountingPeriods.
+     */
+    distinct?: AccountingPeriodScalarFieldEnum | AccountingPeriodScalarFieldEnum[]
+  }
+
+  /**
+   * AccountingPeriod findFirstOrThrow
+   */
+  export type AccountingPeriodFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AccountingPeriod
+     */
+    select?: AccountingPeriodSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AccountingPeriod
+     */
+    omit?: AccountingPeriodOmit<ExtArgs> | null
+    /**
+     * Filter, which AccountingPeriod to fetch.
+     */
+    where?: AccountingPeriodWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     *
+     * Determine the order of AccountingPeriods to fetch.
+     */
+    orderBy?: AccountingPeriodOrderByWithRelationInput | AccountingPeriodOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     *
+     * Sets the position for searching for AccountingPeriods.
+     */
+    cursor?: AccountingPeriodWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Take `±n` AccountingPeriods from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Skip the first `n` AccountingPeriods.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     *
+     * Filter by unique combinations of AccountingPeriods.
+     */
+    distinct?: AccountingPeriodScalarFieldEnum | AccountingPeriodScalarFieldEnum[]
+  }
+
+  /**
+   * AccountingPeriod findMany
+   */
+  export type AccountingPeriodFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AccountingPeriod
+     */
+    select?: AccountingPeriodSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AccountingPeriod
+     */
+    omit?: AccountingPeriodOmit<ExtArgs> | null
+    /**
+     * Filter, which AccountingPeriods to fetch.
+     */
+    where?: AccountingPeriodWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     *
+     * Determine the order of AccountingPeriods to fetch.
+     */
+    orderBy?: AccountingPeriodOrderByWithRelationInput | AccountingPeriodOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     *
+     * Sets the position for listing AccountingPeriods.
+     */
+    cursor?: AccountingPeriodWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Take `±n` AccountingPeriods from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Skip the first `n` AccountingPeriods.
+     */
+    skip?: number
+    distinct?: AccountingPeriodScalarFieldEnum | AccountingPeriodScalarFieldEnum[]
+  }
+
+  /**
+   * AccountingPeriod create
+   */
+  export type AccountingPeriodCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AccountingPeriod
+     */
+    select?: AccountingPeriodSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AccountingPeriod
+     */
+    omit?: AccountingPeriodOmit<ExtArgs> | null
+    /**
+     * The data needed to create a AccountingPeriod.
+     */
+    data: XOR<AccountingPeriodCreateInput, AccountingPeriodUncheckedCreateInput>
+  }
+
+  /**
+   * AccountingPeriod createMany
+   */
+  export type AccountingPeriodCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many AccountingPeriods.
+     */
+    data: AccountingPeriodCreateManyInput | AccountingPeriodCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * AccountingPeriod createManyAndReturn
+   */
+  export type AccountingPeriodCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AccountingPeriod
+     */
+    select?: AccountingPeriodSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the AccountingPeriod
+     */
+    omit?: AccountingPeriodOmit<ExtArgs> | null
+    /**
+     * The data used to create many AccountingPeriods.
+     */
+    data: AccountingPeriodCreateManyInput | AccountingPeriodCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * AccountingPeriod update
+   */
+  export type AccountingPeriodUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AccountingPeriod
+     */
+    select?: AccountingPeriodSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AccountingPeriod
+     */
+    omit?: AccountingPeriodOmit<ExtArgs> | null
+    /**
+     * The data needed to update a AccountingPeriod.
+     */
+    data: XOR<AccountingPeriodUpdateInput, AccountingPeriodUncheckedUpdateInput>
+    /**
+     * Choose, which AccountingPeriod to update.
+     */
+    where: AccountingPeriodWhereUniqueInput
+  }
+
+  /**
+   * AccountingPeriod updateMany
+   */
+  export type AccountingPeriodUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update AccountingPeriods.
+     */
+    data: XOR<AccountingPeriodUpdateManyMutationInput, AccountingPeriodUncheckedUpdateManyInput>
+    /**
+     * Filter which AccountingPeriods to update
+     */
+    where?: AccountingPeriodWhereInput
+    /**
+     * Limit how many AccountingPeriods to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * AccountingPeriod updateManyAndReturn
+   */
+  export type AccountingPeriodUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AccountingPeriod
+     */
+    select?: AccountingPeriodSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the AccountingPeriod
+     */
+    omit?: AccountingPeriodOmit<ExtArgs> | null
+    /**
+     * The data used to update AccountingPeriods.
+     */
+    data: XOR<AccountingPeriodUpdateManyMutationInput, AccountingPeriodUncheckedUpdateManyInput>
+    /**
+     * Filter which AccountingPeriods to update
+     */
+    where?: AccountingPeriodWhereInput
+    /**
+     * Limit how many AccountingPeriods to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * AccountingPeriod upsert
+   */
+  export type AccountingPeriodUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AccountingPeriod
+     */
+    select?: AccountingPeriodSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AccountingPeriod
+     */
+    omit?: AccountingPeriodOmit<ExtArgs> | null
+    /**
+     * The filter to search for the AccountingPeriod to update in case it exists.
+     */
+    where: AccountingPeriodWhereUniqueInput
+    /**
+     * In case the AccountingPeriod found by the `where` argument doesn't exist, create a new AccountingPeriod with this data.
+     */
+    create: XOR<AccountingPeriodCreateInput, AccountingPeriodUncheckedCreateInput>
+    /**
+     * In case the AccountingPeriod was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<AccountingPeriodUpdateInput, AccountingPeriodUncheckedUpdateInput>
+  }
+
+  /**
+   * AccountingPeriod delete
+   */
+  export type AccountingPeriodDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AccountingPeriod
+     */
+    select?: AccountingPeriodSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AccountingPeriod
+     */
+    omit?: AccountingPeriodOmit<ExtArgs> | null
+    /**
+     * Filter which AccountingPeriod to delete.
+     */
+    where: AccountingPeriodWhereUniqueInput
+  }
+
+  /**
+   * AccountingPeriod deleteMany
+   */
+  export type AccountingPeriodDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which AccountingPeriods to delete
+     */
+    where?: AccountingPeriodWhereInput
+    /**
+     * Limit how many AccountingPeriods to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * AccountingPeriod without action
+   */
+  export type AccountingPeriodDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AccountingPeriod
+     */
+    select?: AccountingPeriodSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AccountingPeriod
+     */
+    omit?: AccountingPeriodOmit<ExtArgs> | null
+  }
+
+
+  /**
    * Model JournalEntry
    */
 
@@ -2265,6 +3426,8 @@ export namespace Prisma {
     id: number | null
     date: Date | null
     description: string | null
+    status: $Enums.JournalEntryStatus | null
+    rejectionReason: string | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -2273,6 +3436,8 @@ export namespace Prisma {
     id: number | null
     date: Date | null
     description: string | null
+    status: $Enums.JournalEntryStatus | null
+    rejectionReason: string | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -2281,6 +3446,8 @@ export namespace Prisma {
     id: number
     date: number
     description: number
+    status: number
+    rejectionReason: number
     createdAt: number
     updatedAt: number
     _all: number
@@ -2299,6 +3466,8 @@ export namespace Prisma {
     id?: true
     date?: true
     description?: true
+    status?: true
+    rejectionReason?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -2307,6 +3476,8 @@ export namespace Prisma {
     id?: true
     date?: true
     description?: true
+    status?: true
+    rejectionReason?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -2315,6 +3486,8 @@ export namespace Prisma {
     id?: true
     date?: true
     description?: true
+    status?: true
+    rejectionReason?: true
     createdAt?: true
     updatedAt?: true
     _all?: true
@@ -2410,6 +3583,8 @@ export namespace Prisma {
     id: number
     date: Date
     description: string
+    status: $Enums.JournalEntryStatus
+    rejectionReason: string | null
     createdAt: Date
     updatedAt: Date
     _count: JournalEntryCountAggregateOutputType | null
@@ -2437,6 +3612,8 @@ export namespace Prisma {
     id?: boolean
     date?: boolean
     description?: boolean
+    status?: boolean
+    rejectionReason?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     lines?: boolean | JournalEntry$linesArgs<ExtArgs>
@@ -2447,6 +3624,8 @@ export namespace Prisma {
     id?: boolean
     date?: boolean
     description?: boolean
+    status?: boolean
+    rejectionReason?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }, ExtArgs["result"]["journalEntry"]>
@@ -2455,6 +3634,8 @@ export namespace Prisma {
     id?: boolean
     date?: boolean
     description?: boolean
+    status?: boolean
+    rejectionReason?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }, ExtArgs["result"]["journalEntry"]>
@@ -2463,11 +3644,13 @@ export namespace Prisma {
     id?: boolean
     date?: boolean
     description?: boolean
+    status?: boolean
+    rejectionReason?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
 
-  export type JournalEntryOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "date" | "description" | "createdAt" | "updatedAt", ExtArgs["result"]["journalEntry"]>
+  export type JournalEntryOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "date" | "description" | "status" | "rejectionReason" | "createdAt" | "updatedAt", ExtArgs["result"]["journalEntry"]>
   export type JournalEntryInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     lines?: boolean | JournalEntry$linesArgs<ExtArgs>
     _count?: boolean | JournalEntryCountOutputTypeDefaultArgs<ExtArgs>
@@ -2484,6 +3667,8 @@ export namespace Prisma {
       id: number
       date: Date
       description: string
+      status: $Enums.JournalEntryStatus
+      rejectionReason: string | null
       createdAt: Date
       updatedAt: Date
     }, ExtArgs["result"]["journalEntry"]>
@@ -2913,6 +4098,8 @@ export namespace Prisma {
     readonly id: FieldRef<"JournalEntry", 'Int'>
     readonly date: FieldRef<"JournalEntry", 'DateTime'>
     readonly description: FieldRef<"JournalEntry", 'String'>
+    readonly status: FieldRef<"JournalEntry", 'JournalEntryStatus'>
+    readonly rejectionReason: FieldRef<"JournalEntry", 'String'>
     readonly createdAt: FieldRef<"JournalEntry", 'DateTime'>
     readonly updatedAt: FieldRef<"JournalEntry", 'DateTime'>
   }
@@ -4483,10 +5670,25 @@ export namespace Prisma {
   export type AccountScalarFieldEnum = (typeof AccountScalarFieldEnum)[keyof typeof AccountScalarFieldEnum]
 
 
+  export const AccountingPeriodScalarFieldEnum: {
+    id: 'id',
+    name: 'name',
+    startDate: 'startDate',
+    endDate: 'endDate',
+    isClosed: 'isClosed',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type AccountingPeriodScalarFieldEnum = (typeof AccountingPeriodScalarFieldEnum)[keyof typeof AccountingPeriodScalarFieldEnum]
+
+
   export const JournalEntryScalarFieldEnum: {
     id: 'id',
     date: 'date',
     description: 'description',
+    status: 'status',
+    rejectionReason: 'rejectionReason',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
   };
@@ -4519,6 +5721,14 @@ export namespace Prisma {
   };
 
   export type QueryMode = (typeof QueryMode)[keyof typeof QueryMode]
+
+
+  export const NullsOrder: {
+    first: 'first',
+    last: 'last'
+  };
+
+  export type NullsOrder = (typeof NullsOrder)[keyof typeof NullsOrder]
 
 
   /**
@@ -4583,6 +5793,27 @@ export namespace Prisma {
 
 
   /**
+   * Reference to a field of type 'Boolean'
+   */
+  export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Boolean'>
+
+
+
+  /**
+   * Reference to a field of type 'JournalEntryStatus'
+   */
+  export type EnumJournalEntryStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'JournalEntryStatus'>
+
+
+
+  /**
+   * Reference to a field of type 'JournalEntryStatus[]'
+   */
+  export type ListEnumJournalEntryStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'JournalEntryStatus[]'>
+
+
+
+  /**
    * Reference to a field of type 'Float'
    */
   export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float'>
@@ -4593,13 +5824,6 @@ export namespace Prisma {
    * Reference to a field of type 'Float[]'
    */
   export type ListFloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float[]'>
-
-
-
-  /**
-   * Reference to a field of type 'Boolean'
-   */
-  export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Boolean'>
 
   /**
    * Deep Input Types
@@ -4668,6 +5892,70 @@ export namespace Prisma {
     updatedAt?: DateTimeWithAggregatesFilter<"Account"> | Date | string
   }
 
+  export type AccountingPeriodWhereInput = {
+    AND?: AccountingPeriodWhereInput | AccountingPeriodWhereInput[]
+    OR?: AccountingPeriodWhereInput[]
+    NOT?: AccountingPeriodWhereInput | AccountingPeriodWhereInput[]
+    id?: IntFilter<"AccountingPeriod"> | number
+    name?: StringFilter<"AccountingPeriod"> | string
+    startDate?: DateTimeFilter<"AccountingPeriod"> | Date | string
+    endDate?: DateTimeFilter<"AccountingPeriod"> | Date | string
+    isClosed?: BoolFilter<"AccountingPeriod"> | boolean
+    createdAt?: DateTimeFilter<"AccountingPeriod"> | Date | string
+    updatedAt?: DateTimeFilter<"AccountingPeriod"> | Date | string
+  }
+
+  export type AccountingPeriodOrderByWithRelationInput = {
+    id?: SortOrder
+    name?: SortOrder
+    startDate?: SortOrder
+    endDate?: SortOrder
+    isClosed?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type AccountingPeriodWhereUniqueInput = Prisma.AtLeast<{
+    id?: number
+    AND?: AccountingPeriodWhereInput | AccountingPeriodWhereInput[]
+    OR?: AccountingPeriodWhereInput[]
+    NOT?: AccountingPeriodWhereInput | AccountingPeriodWhereInput[]
+    name?: StringFilter<"AccountingPeriod"> | string
+    startDate?: DateTimeFilter<"AccountingPeriod"> | Date | string
+    endDate?: DateTimeFilter<"AccountingPeriod"> | Date | string
+    isClosed?: BoolFilter<"AccountingPeriod"> | boolean
+    createdAt?: DateTimeFilter<"AccountingPeriod"> | Date | string
+    updatedAt?: DateTimeFilter<"AccountingPeriod"> | Date | string
+  }, "id">
+
+  export type AccountingPeriodOrderByWithAggregationInput = {
+    id?: SortOrder
+    name?: SortOrder
+    startDate?: SortOrder
+    endDate?: SortOrder
+    isClosed?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: AccountingPeriodCountOrderByAggregateInput
+    _avg?: AccountingPeriodAvgOrderByAggregateInput
+    _max?: AccountingPeriodMaxOrderByAggregateInput
+    _min?: AccountingPeriodMinOrderByAggregateInput
+    _sum?: AccountingPeriodSumOrderByAggregateInput
+  }
+
+  export type AccountingPeriodScalarWhereWithAggregatesInput = {
+    AND?: AccountingPeriodScalarWhereWithAggregatesInput | AccountingPeriodScalarWhereWithAggregatesInput[]
+    OR?: AccountingPeriodScalarWhereWithAggregatesInput[]
+    NOT?: AccountingPeriodScalarWhereWithAggregatesInput | AccountingPeriodScalarWhereWithAggregatesInput[]
+    id?: IntWithAggregatesFilter<"AccountingPeriod"> | number
+    name?: StringWithAggregatesFilter<"AccountingPeriod"> | string
+    startDate?: DateTimeWithAggregatesFilter<"AccountingPeriod"> | Date | string
+    endDate?: DateTimeWithAggregatesFilter<"AccountingPeriod"> | Date | string
+    isClosed?: BoolWithAggregatesFilter<"AccountingPeriod"> | boolean
+    createdAt?: DateTimeWithAggregatesFilter<"AccountingPeriod"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"AccountingPeriod"> | Date | string
+  }
+
   export type JournalEntryWhereInput = {
     AND?: JournalEntryWhereInput | JournalEntryWhereInput[]
     OR?: JournalEntryWhereInput[]
@@ -4675,6 +5963,8 @@ export namespace Prisma {
     id?: IntFilter<"JournalEntry"> | number
     date?: DateTimeFilter<"JournalEntry"> | Date | string
     description?: StringFilter<"JournalEntry"> | string
+    status?: EnumJournalEntryStatusFilter<"JournalEntry"> | $Enums.JournalEntryStatus
+    rejectionReason?: StringNullableFilter<"JournalEntry"> | string | null
     createdAt?: DateTimeFilter<"JournalEntry"> | Date | string
     updatedAt?: DateTimeFilter<"JournalEntry"> | Date | string
     lines?: JournalEntryLineListRelationFilter
@@ -4684,6 +5974,8 @@ export namespace Prisma {
     id?: SortOrder
     date?: SortOrder
     description?: SortOrder
+    status?: SortOrder
+    rejectionReason?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     lines?: JournalEntryLineOrderByRelationAggregateInput
@@ -4696,6 +5988,8 @@ export namespace Prisma {
     NOT?: JournalEntryWhereInput | JournalEntryWhereInput[]
     date?: DateTimeFilter<"JournalEntry"> | Date | string
     description?: StringFilter<"JournalEntry"> | string
+    status?: EnumJournalEntryStatusFilter<"JournalEntry"> | $Enums.JournalEntryStatus
+    rejectionReason?: StringNullableFilter<"JournalEntry"> | string | null
     createdAt?: DateTimeFilter<"JournalEntry"> | Date | string
     updatedAt?: DateTimeFilter<"JournalEntry"> | Date | string
     lines?: JournalEntryLineListRelationFilter
@@ -4705,6 +5999,8 @@ export namespace Prisma {
     id?: SortOrder
     date?: SortOrder
     description?: SortOrder
+    status?: SortOrder
+    rejectionReason?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     _count?: JournalEntryCountOrderByAggregateInput
@@ -4721,6 +6017,8 @@ export namespace Prisma {
     id?: IntWithAggregatesFilter<"JournalEntry"> | number
     date?: DateTimeWithAggregatesFilter<"JournalEntry"> | Date | string
     description?: StringWithAggregatesFilter<"JournalEntry"> | string
+    status?: EnumJournalEntryStatusWithAggregatesFilter<"JournalEntry"> | $Enums.JournalEntryStatus
+    rejectionReason?: StringNullableWithAggregatesFilter<"JournalEntry"> | string | null
     createdAt?: DateTimeWithAggregatesFilter<"JournalEntry"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"JournalEntry"> | Date | string
   }
@@ -4849,9 +6147,78 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type AccountingPeriodCreateInput = {
+    name: string
+    startDate: Date | string
+    endDate: Date | string
+    isClosed?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type AccountingPeriodUncheckedCreateInput = {
+    id?: number
+    name: string
+    startDate: Date | string
+    endDate: Date | string
+    isClosed?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type AccountingPeriodUpdateInput = {
+    name?: StringFieldUpdateOperationsInput | string
+    startDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    endDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    isClosed?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type AccountingPeriodUncheckedUpdateInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    name?: StringFieldUpdateOperationsInput | string
+    startDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    endDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    isClosed?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type AccountingPeriodCreateManyInput = {
+    id?: number
+    name: string
+    startDate: Date | string
+    endDate: Date | string
+    isClosed?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type AccountingPeriodUpdateManyMutationInput = {
+    name?: StringFieldUpdateOperationsInput | string
+    startDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    endDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    isClosed?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type AccountingPeriodUncheckedUpdateManyInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    name?: StringFieldUpdateOperationsInput | string
+    startDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    endDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    isClosed?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type JournalEntryCreateInput = {
     date: Date | string
     description: string
+    status?: $Enums.JournalEntryStatus
+    rejectionReason?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     lines?: JournalEntryLineCreateNestedManyWithoutJournalEntryInput
@@ -4861,6 +6228,8 @@ export namespace Prisma {
     id?: number
     date: Date | string
     description: string
+    status?: $Enums.JournalEntryStatus
+    rejectionReason?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     lines?: JournalEntryLineUncheckedCreateNestedManyWithoutJournalEntryInput
@@ -4869,6 +6238,8 @@ export namespace Prisma {
   export type JournalEntryUpdateInput = {
     date?: DateTimeFieldUpdateOperationsInput | Date | string
     description?: StringFieldUpdateOperationsInput | string
+    status?: EnumJournalEntryStatusFieldUpdateOperationsInput | $Enums.JournalEntryStatus
+    rejectionReason?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     lines?: JournalEntryLineUpdateManyWithoutJournalEntryNestedInput
@@ -4878,6 +6249,8 @@ export namespace Prisma {
     id?: IntFieldUpdateOperationsInput | number
     date?: DateTimeFieldUpdateOperationsInput | Date | string
     description?: StringFieldUpdateOperationsInput | string
+    status?: EnumJournalEntryStatusFieldUpdateOperationsInput | $Enums.JournalEntryStatus
+    rejectionReason?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     lines?: JournalEntryLineUncheckedUpdateManyWithoutJournalEntryNestedInput
@@ -4887,6 +6260,8 @@ export namespace Prisma {
     id?: number
     date: Date | string
     description: string
+    status?: $Enums.JournalEntryStatus
+    rejectionReason?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -4894,6 +6269,8 @@ export namespace Prisma {
   export type JournalEntryUpdateManyMutationInput = {
     date?: DateTimeFieldUpdateOperationsInput | Date | string
     description?: StringFieldUpdateOperationsInput | string
+    status?: EnumJournalEntryStatusFieldUpdateOperationsInput | $Enums.JournalEntryStatus
+    rejectionReason?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -4902,6 +6279,8 @@ export namespace Prisma {
     id?: IntFieldUpdateOperationsInput | number
     date?: DateTimeFieldUpdateOperationsInput | Date | string
     description?: StringFieldUpdateOperationsInput | string
+    status?: EnumJournalEntryStatusFieldUpdateOperationsInput | $Enums.JournalEntryStatus
+    rejectionReason?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -5104,10 +6483,90 @@ export namespace Prisma {
     _max?: NestedDateTimeFilter<$PrismaModel>
   }
 
+  export type BoolFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolFilter<$PrismaModel> | boolean
+  }
+
+  export type AccountingPeriodCountOrderByAggregateInput = {
+    id?: SortOrder
+    name?: SortOrder
+    startDate?: SortOrder
+    endDate?: SortOrder
+    isClosed?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type AccountingPeriodAvgOrderByAggregateInput = {
+    id?: SortOrder
+  }
+
+  export type AccountingPeriodMaxOrderByAggregateInput = {
+    id?: SortOrder
+    name?: SortOrder
+    startDate?: SortOrder
+    endDate?: SortOrder
+    isClosed?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type AccountingPeriodMinOrderByAggregateInput = {
+    id?: SortOrder
+    name?: SortOrder
+    startDate?: SortOrder
+    endDate?: SortOrder
+    isClosed?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type AccountingPeriodSumOrderByAggregateInput = {
+    id?: SortOrder
+  }
+
+  export type BoolWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolWithAggregatesFilter<$PrismaModel> | boolean
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedBoolFilter<$PrismaModel>
+    _max?: NestedBoolFilter<$PrismaModel>
+  }
+
+  export type EnumJournalEntryStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.JournalEntryStatus | EnumJournalEntryStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.JournalEntryStatus[] | ListEnumJournalEntryStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.JournalEntryStatus[] | ListEnumJournalEntryStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumJournalEntryStatusFilter<$PrismaModel> | $Enums.JournalEntryStatus
+  }
+
+  export type StringNullableFilter<$PrismaModel = never> = {
+    equals?: string | StringFieldRefInput<$PrismaModel> | null
+    in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    lt?: string | StringFieldRefInput<$PrismaModel>
+    lte?: string | StringFieldRefInput<$PrismaModel>
+    gt?: string | StringFieldRefInput<$PrismaModel>
+    gte?: string | StringFieldRefInput<$PrismaModel>
+    contains?: string | StringFieldRefInput<$PrismaModel>
+    startsWith?: string | StringFieldRefInput<$PrismaModel>
+    endsWith?: string | StringFieldRefInput<$PrismaModel>
+    mode?: QueryMode
+    not?: NestedStringNullableFilter<$PrismaModel> | string | null
+  }
+
+  export type SortOrderInput = {
+    sort: SortOrder
+    nulls?: NullsOrder
+  }
+
   export type JournalEntryCountOrderByAggregateInput = {
     id?: SortOrder
     date?: SortOrder
     description?: SortOrder
+    status?: SortOrder
+    rejectionReason?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -5120,6 +6579,8 @@ export namespace Prisma {
     id?: SortOrder
     date?: SortOrder
     description?: SortOrder
+    status?: SortOrder
+    rejectionReason?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -5128,12 +6589,42 @@ export namespace Prisma {
     id?: SortOrder
     date?: SortOrder
     description?: SortOrder
+    status?: SortOrder
+    rejectionReason?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
 
   export type JournalEntrySumOrderByAggregateInput = {
     id?: SortOrder
+  }
+
+  export type EnumJournalEntryStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.JournalEntryStatus | EnumJournalEntryStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.JournalEntryStatus[] | ListEnumJournalEntryStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.JournalEntryStatus[] | ListEnumJournalEntryStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumJournalEntryStatusWithAggregatesFilter<$PrismaModel> | $Enums.JournalEntryStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumJournalEntryStatusFilter<$PrismaModel>
+    _max?: NestedEnumJournalEntryStatusFilter<$PrismaModel>
+  }
+
+  export type StringNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: string | StringFieldRefInput<$PrismaModel> | null
+    in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    lt?: string | StringFieldRefInput<$PrismaModel>
+    lte?: string | StringFieldRefInput<$PrismaModel>
+    gt?: string | StringFieldRefInput<$PrismaModel>
+    gte?: string | StringFieldRefInput<$PrismaModel>
+    contains?: string | StringFieldRefInput<$PrismaModel>
+    startsWith?: string | StringFieldRefInput<$PrismaModel>
+    endsWith?: string | StringFieldRefInput<$PrismaModel>
+    mode?: QueryMode
+    not?: NestedStringNullableWithAggregatesFilter<$PrismaModel> | string | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedStringNullableFilter<$PrismaModel>
+    _max?: NestedStringNullableFilter<$PrismaModel>
   }
 
   export type FloatFilter<$PrismaModel = never> = {
@@ -5145,11 +6636,6 @@ export namespace Prisma {
     gt?: number | FloatFieldRefInput<$PrismaModel>
     gte?: number | FloatFieldRefInput<$PrismaModel>
     not?: NestedFloatFilter<$PrismaModel> | number
-  }
-
-  export type BoolFilter<$PrismaModel = never> = {
-    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
-    not?: NestedBoolFilter<$PrismaModel> | boolean
   }
 
   export type JournalEntryScalarRelationFilter = {
@@ -5216,14 +6702,6 @@ export namespace Prisma {
     _max?: NestedFloatFilter<$PrismaModel>
   }
 
-  export type BoolWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
-    not?: NestedBoolWithAggregatesFilter<$PrismaModel> | boolean
-    _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedBoolFilter<$PrismaModel>
-    _max?: NestedBoolFilter<$PrismaModel>
-  }
-
   export type JournalEntryLineCreateNestedManyWithoutAccountInput = {
     create?: XOR<JournalEntryLineCreateWithoutAccountInput, JournalEntryLineUncheckedCreateWithoutAccountInput> | JournalEntryLineCreateWithoutAccountInput[] | JournalEntryLineUncheckedCreateWithoutAccountInput[]
     connectOrCreate?: JournalEntryLineCreateOrConnectWithoutAccountInput | JournalEntryLineCreateOrConnectWithoutAccountInput[]
@@ -5286,6 +6764,10 @@ export namespace Prisma {
     deleteMany?: JournalEntryLineScalarWhereInput | JournalEntryLineScalarWhereInput[]
   }
 
+  export type BoolFieldUpdateOperationsInput = {
+    set?: boolean
+  }
+
   export type JournalEntryLineCreateNestedManyWithoutJournalEntryInput = {
     create?: XOR<JournalEntryLineCreateWithoutJournalEntryInput, JournalEntryLineUncheckedCreateWithoutJournalEntryInput> | JournalEntryLineCreateWithoutJournalEntryInput[] | JournalEntryLineUncheckedCreateWithoutJournalEntryInput[]
     connectOrCreate?: JournalEntryLineCreateOrConnectWithoutJournalEntryInput | JournalEntryLineCreateOrConnectWithoutJournalEntryInput[]
@@ -5298,6 +6780,14 @@ export namespace Prisma {
     connectOrCreate?: JournalEntryLineCreateOrConnectWithoutJournalEntryInput | JournalEntryLineCreateOrConnectWithoutJournalEntryInput[]
     createMany?: JournalEntryLineCreateManyJournalEntryInputEnvelope
     connect?: JournalEntryLineWhereUniqueInput | JournalEntryLineWhereUniqueInput[]
+  }
+
+  export type EnumJournalEntryStatusFieldUpdateOperationsInput = {
+    set?: $Enums.JournalEntryStatus
+  }
+
+  export type NullableStringFieldUpdateOperationsInput = {
+    set?: string | null
   }
 
   export type JournalEntryLineUpdateManyWithoutJournalEntryNestedInput = {
@@ -5346,10 +6836,6 @@ export namespace Prisma {
     decrement?: number
     multiply?: number
     divide?: number
-  }
-
-  export type BoolFieldUpdateOperationsInput = {
-    set?: boolean
   }
 
   export type JournalEntryUpdateOneRequiredWithoutLinesNestedInput = {
@@ -5484,6 +6970,73 @@ export namespace Prisma {
     not?: NestedBoolFilter<$PrismaModel> | boolean
   }
 
+  export type NestedBoolWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolWithAggregatesFilter<$PrismaModel> | boolean
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedBoolFilter<$PrismaModel>
+    _max?: NestedBoolFilter<$PrismaModel>
+  }
+
+  export type NestedEnumJournalEntryStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.JournalEntryStatus | EnumJournalEntryStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.JournalEntryStatus[] | ListEnumJournalEntryStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.JournalEntryStatus[] | ListEnumJournalEntryStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumJournalEntryStatusFilter<$PrismaModel> | $Enums.JournalEntryStatus
+  }
+
+  export type NestedStringNullableFilter<$PrismaModel = never> = {
+    equals?: string | StringFieldRefInput<$PrismaModel> | null
+    in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    lt?: string | StringFieldRefInput<$PrismaModel>
+    lte?: string | StringFieldRefInput<$PrismaModel>
+    gt?: string | StringFieldRefInput<$PrismaModel>
+    gte?: string | StringFieldRefInput<$PrismaModel>
+    contains?: string | StringFieldRefInput<$PrismaModel>
+    startsWith?: string | StringFieldRefInput<$PrismaModel>
+    endsWith?: string | StringFieldRefInput<$PrismaModel>
+    not?: NestedStringNullableFilter<$PrismaModel> | string | null
+  }
+
+  export type NestedEnumJournalEntryStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.JournalEntryStatus | EnumJournalEntryStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.JournalEntryStatus[] | ListEnumJournalEntryStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.JournalEntryStatus[] | ListEnumJournalEntryStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumJournalEntryStatusWithAggregatesFilter<$PrismaModel> | $Enums.JournalEntryStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumJournalEntryStatusFilter<$PrismaModel>
+    _max?: NestedEnumJournalEntryStatusFilter<$PrismaModel>
+  }
+
+  export type NestedStringNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: string | StringFieldRefInput<$PrismaModel> | null
+    in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    lt?: string | StringFieldRefInput<$PrismaModel>
+    lte?: string | StringFieldRefInput<$PrismaModel>
+    gt?: string | StringFieldRefInput<$PrismaModel>
+    gte?: string | StringFieldRefInput<$PrismaModel>
+    contains?: string | StringFieldRefInput<$PrismaModel>
+    startsWith?: string | StringFieldRefInput<$PrismaModel>
+    endsWith?: string | StringFieldRefInput<$PrismaModel>
+    not?: NestedStringNullableWithAggregatesFilter<$PrismaModel> | string | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedStringNullableFilter<$PrismaModel>
+    _max?: NestedStringNullableFilter<$PrismaModel>
+  }
+
+  export type NestedIntNullableFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntNullableFilter<$PrismaModel> | number | null
+  }
+
   export type NestedFloatWithAggregatesFilter<$PrismaModel = never> = {
     equals?: number | FloatFieldRefInput<$PrismaModel>
     in?: number[] | ListFloatFieldRefInput<$PrismaModel>
@@ -5498,14 +7051,6 @@ export namespace Prisma {
     _sum?: NestedFloatFilter<$PrismaModel>
     _min?: NestedFloatFilter<$PrismaModel>
     _max?: NestedFloatFilter<$PrismaModel>
-  }
-
-  export type NestedBoolWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
-    not?: NestedBoolWithAggregatesFilter<$PrismaModel> | boolean
-    _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedBoolFilter<$PrismaModel>
-    _max?: NestedBoolFilter<$PrismaModel>
   }
 
   export type JournalEntryLineCreateWithoutAccountInput = {
@@ -5600,6 +7145,8 @@ export namespace Prisma {
   export type JournalEntryCreateWithoutLinesInput = {
     date: Date | string
     description: string
+    status?: $Enums.JournalEntryStatus
+    rejectionReason?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -5608,6 +7155,8 @@ export namespace Prisma {
     id?: number
     date: Date | string
     description: string
+    status?: $Enums.JournalEntryStatus
+    rejectionReason?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -5653,6 +7202,8 @@ export namespace Prisma {
   export type JournalEntryUpdateWithoutLinesInput = {
     date?: DateTimeFieldUpdateOperationsInput | Date | string
     description?: StringFieldUpdateOperationsInput | string
+    status?: EnumJournalEntryStatusFieldUpdateOperationsInput | $Enums.JournalEntryStatus
+    rejectionReason?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -5661,6 +7212,8 @@ export namespace Prisma {
     id?: IntFieldUpdateOperationsInput | number
     date?: DateTimeFieldUpdateOperationsInput | Date | string
     description?: StringFieldUpdateOperationsInput | string
+    status?: EnumJournalEntryStatusFieldUpdateOperationsInput | $Enums.JournalEntryStatus
+    rejectionReason?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
