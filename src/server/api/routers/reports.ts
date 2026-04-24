@@ -10,11 +10,13 @@ export const reportsRouter = createTRPCRouter({
         orderBy: { code: "asc" },
       });
 
+      const baseWhereClause = { journalEntry: { status: "APPROVED" } };
       const whereClause = input.asOfDate
-        ? { journalEntry: { date: { lte: input.asOfDate } } }
-        : {};
+        ? { ...baseWhereClause, journalEntry: { ...baseWhereClause.journalEntry, date: { lte: input.asOfDate } } }
+        : baseWhereClause;
 
       const lines = await ctx.db.journalEntryLine.findMany({
+        // @ts-ignore
         where: whereClause,
       });
 
@@ -70,10 +72,10 @@ export const reportsRouter = createTRPCRouter({
         throw new Error("Account not found");
       }
 
-      const whereClause: any = { accountId: input.accountId };
+      const whereClause: any = { accountId: input.accountId, journalEntry: { status: "APPROVED" } };
 
       if (input.startDate || input.endDate) {
-          whereClause.journalEntry = { date: {} };
+          whereClause.journalEntry.date = {};
           if (input.startDate) whereClause.journalEntry.date.gte = input.startDate;
           if (input.endDate) whereClause.journalEntry.date.lte = input.endDate;
       }

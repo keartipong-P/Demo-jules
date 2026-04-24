@@ -102,10 +102,22 @@ exports.Prisma.AccountScalarFieldEnum = {
   updatedAt: 'updatedAt'
 };
 
+exports.Prisma.AccountingPeriodScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  startDate: 'startDate',
+  endDate: 'endDate',
+  isClosed: 'isClosed',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
 exports.Prisma.JournalEntryScalarFieldEnum = {
   id: 'id',
   date: 'date',
   description: 'description',
+  status: 'status',
+  rejectionReason: 'rejectionReason',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };
@@ -127,6 +139,11 @@ exports.Prisma.QueryMode = {
   default: 'default',
   insensitive: 'insensitive'
 };
+
+exports.Prisma.NullsOrder = {
+  first: 'first',
+  last: 'last'
+};
 exports.AccountType = exports.$Enums.AccountType = {
   ASSET: 'ASSET',
   LIABILITY: 'LIABILITY',
@@ -135,8 +152,17 @@ exports.AccountType = exports.$Enums.AccountType = {
   EXPENSE: 'EXPENSE'
 };
 
+exports.JournalEntryStatus = exports.$Enums.JournalEntryStatus = {
+  DRAFT: 'DRAFT',
+  PENDING: 'PENDING',
+  APPROVED: 'APPROVED',
+  REJECTED: 'REJECTED',
+  VOIDED: 'VOIDED'
+};
+
 exports.Prisma.ModelName = {
   Account: 'Account',
+  AccountingPeriod: 'AccountingPeriod',
   JournalEntry: 'JournalEntry',
   JournalEntryLine: 'JournalEntryLine'
 };
@@ -188,13 +214,13 @@ const config = {
       }
     }
   },
-  "inlineSchema": "// This is your Prisma schema file,\n// learn more about it in the docs: https://pris.ly/d/prisma-schema\n\ngenerator client {\n  provider = \"prisma-client-js\"\n  output   = \"../generated/prisma\"\n}\n\ndatasource db {\n  provider = \"postgresql\"\n  url      = env(\"DATABASE_URL\")\n}\n\nmodel Account {\n  id        Int         @id @default(autoincrement())\n  code      String      @unique // e.g. \"1000\", \"2000\"\n  name      String // e.g. \"Cash\", \"Accounts Payable\"\n  type      AccountType // Asset, Liability, Equity, Revenue, Expense\n  createdAt DateTime    @default(now())\n  updatedAt DateTime    @updatedAt\n\n  lines JournalEntryLine[]\n\n  @@index([code])\n}\n\nenum AccountType {\n  ASSET\n  LIABILITY\n  EQUITY\n  REVENUE\n  EXPENSE\n}\n\nmodel JournalEntry {\n  id          Int      @id @default(autoincrement())\n  date        DateTime\n  description String\n  createdAt   DateTime @default(now())\n  updatedAt   DateTime @updatedAt\n\n  lines JournalEntryLine[]\n}\n\nmodel JournalEntryLine {\n  id             Int     @id @default(autoincrement())\n  journalEntryId Int\n  accountId      Int\n  amount         Float // Positive for debit, negative for credit (or separate fields, here we use one for simplicity or separate debit/credit fields. Let's use separate for better accounting practice).\n  isDebit        Boolean // True if debit, False if credit\n\n  journalEntry JournalEntry @relation(fields: [journalEntryId], references: [id], onDelete: Cascade)\n  account      Account      @relation(fields: [accountId], references: [id])\n}\n",
-  "inlineSchemaHash": "b5b155641ecc4a8351b2530186906b5f3cab6a662e082ec319d31b23efef52c7",
+  "inlineSchema": "// This is your Prisma schema file,\n// learn more about it in the docs: https://pris.ly/d/prisma-schema\n\ngenerator client {\n  provider = \"prisma-client-js\"\n  output   = \"../generated/prisma\"\n}\n\ndatasource db {\n  provider = \"postgresql\"\n  url      = env(\"DATABASE_URL\")\n}\n\nmodel Account {\n  id        Int         @id @default(autoincrement())\n  code      String      @unique // e.g. \"1000\", \"2000\"\n  name      String // e.g. \"Cash\", \"Accounts Payable\"\n  type      AccountType // Asset, Liability, Equity, Revenue, Expense\n  createdAt DateTime    @default(now())\n  updatedAt DateTime    @updatedAt\n\n  lines JournalEntryLine[]\n\n  @@index([code])\n}\n\nenum AccountType {\n  ASSET\n  LIABILITY\n  EQUITY\n  REVENUE\n  EXPENSE\n}\n\nenum JournalEntryStatus {\n  DRAFT\n  PENDING\n  APPROVED\n  REJECTED\n  VOIDED\n}\n\nmodel AccountingPeriod {\n  id        Int      @id @default(autoincrement())\n  name      String // e.g. \"January 2024\"\n  startDate DateTime\n  endDate   DateTime\n  isClosed  Boolean  @default(false)\n  createdAt DateTime @default(now())\n  updatedAt DateTime @updatedAt\n}\n\nmodel JournalEntry {\n  id              Int                @id @default(autoincrement())\n  date            DateTime\n  description     String\n  status          JournalEntryStatus @default(PENDING)\n  rejectionReason String?\n  createdAt       DateTime           @default(now())\n  updatedAt       DateTime           @updatedAt\n\n  lines JournalEntryLine[]\n}\n\nmodel JournalEntryLine {\n  id             Int     @id @default(autoincrement())\n  journalEntryId Int\n  accountId      Int\n  amount         Float // Positive for debit, negative for credit (or separate fields, here we use one for simplicity or separate debit/credit fields. Let's use separate for better accounting practice).\n  isDebit        Boolean // True if debit, False if credit\n\n  journalEntry JournalEntry @relation(fields: [journalEntryId], references: [id], onDelete: Cascade)\n  account      Account      @relation(fields: [accountId], references: [id])\n}\n",
+  "inlineSchemaHash": "390eb8ae400ad40b163ad17c5e998a0c043ae44db950e04e656f6ac31028835d",
   "copyEngine": true
 }
 config.dirname = '/'
 
-config.runtimeDataModel = JSON.parse("{\"models\":{\"Account\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"code\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"name\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"type\",\"kind\":\"enum\",\"type\":\"AccountType\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"lines\",\"kind\":\"object\",\"type\":\"JournalEntryLine\",\"relationName\":\"AccountToJournalEntryLine\"}],\"dbName\":null},\"JournalEntry\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"date\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"description\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"lines\",\"kind\":\"object\",\"type\":\"JournalEntryLine\",\"relationName\":\"JournalEntryToJournalEntryLine\"}],\"dbName\":null},\"JournalEntryLine\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"journalEntryId\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"accountId\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"amount\",\"kind\":\"scalar\",\"type\":\"Float\"},{\"name\":\"isDebit\",\"kind\":\"scalar\",\"type\":\"Boolean\"},{\"name\":\"journalEntry\",\"kind\":\"object\",\"type\":\"JournalEntry\",\"relationName\":\"JournalEntryToJournalEntryLine\"},{\"name\":\"account\",\"kind\":\"object\",\"type\":\"Account\",\"relationName\":\"AccountToJournalEntryLine\"}],\"dbName\":null}},\"enums\":{},\"types\":{}}")
+config.runtimeDataModel = JSON.parse("{\"models\":{\"Account\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"code\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"name\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"type\",\"kind\":\"enum\",\"type\":\"AccountType\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"lines\",\"kind\":\"object\",\"type\":\"JournalEntryLine\",\"relationName\":\"AccountToJournalEntryLine\"}],\"dbName\":null},\"AccountingPeriod\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"name\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"startDate\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"endDate\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"isClosed\",\"kind\":\"scalar\",\"type\":\"Boolean\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":null},\"JournalEntry\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"date\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"description\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"status\",\"kind\":\"enum\",\"type\":\"JournalEntryStatus\"},{\"name\":\"rejectionReason\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"lines\",\"kind\":\"object\",\"type\":\"JournalEntryLine\",\"relationName\":\"JournalEntryToJournalEntryLine\"}],\"dbName\":null},\"JournalEntryLine\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"journalEntryId\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"accountId\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"amount\",\"kind\":\"scalar\",\"type\":\"Float\"},{\"name\":\"isDebit\",\"kind\":\"scalar\",\"type\":\"Boolean\"},{\"name\":\"journalEntry\",\"kind\":\"object\",\"type\":\"JournalEntry\",\"relationName\":\"JournalEntryToJournalEntryLine\"},{\"name\":\"account\",\"kind\":\"object\",\"type\":\"Account\",\"relationName\":\"AccountToJournalEntryLine\"}],\"dbName\":null}},\"enums\":{},\"types\":{}}")
 defineDmmfProperty(exports.Prisma, config.runtimeDataModel)
 config.engineWasm = {
   getRuntime: async () => require('./query_engine_bg.js'),

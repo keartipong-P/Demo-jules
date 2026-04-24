@@ -2,10 +2,18 @@
 > accapp@0.1.0 start /app
 > next start
 
- ⨯ Failed to start server
-Error: listen EADDRINUSE: address already in use :::3000
-    at <unknown> (Error: listen EADDRINUSE: address already [TRPC] account.getAll took 230ms to execute
-[TRPC] journal.getAll took 230ms to execute
-[TRPC] reports.getTrialBalance took 17ms to execute
+   ▲ Next.js 15.5.15
+   - Local:        http://localhost:3000
+   - Network:      http://192.168.0.2:3000
+
+ ✓ Starting...
+ ✓ Ready in 827ms
+[TRPC] account.getAll took 279ms to execute
+[TRPC] journal.getAll took 305ms to execute
+[TRPC] account.getAll took 17ms to execute
+[TRPC] account.getAll took 16ms to execute
+[TRPC] journal.getAll took 17ms to execute
 [TRPC] account.getAll took 4ms to execute
-code 1.
+[TRPC] journal.getAll took 5ms to execute
+[TRPC] account.getAll took 50ms to execute
+[TRPC] journal.getAll took 54ms to execute

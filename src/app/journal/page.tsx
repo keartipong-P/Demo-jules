@@ -33,6 +33,37 @@ export default function JournalPage() {
     },
   });
 
+  const approveMutation = api.journal.approve.useMutation({
+    onSuccess: async () => {
+      await utils.journal.getAll.invalidate();
+    },
+    onError: (err) => {
+      alert(`Approval failed: ${err.message}`);
+    }
+  });
+
+  const rejectMutation = api.journal.reject.useMutation({
+    onSuccess: async () => {
+      await utils.journal.getAll.invalidate();
+    },
+    onError: (err) => {
+      alert(`Rejection failed: ${err.message}`);
+    }
+  });
+
+  const handleApprove = (id: number) => {
+    if (confirm("Are you sure you want to approve this entry?")) {
+      approveMutation.mutate({ id });
+    }
+  };
+
+  const handleReject = (id: number) => {
+    const reason = prompt("Please enter a reason for rejection:");
+    if (reason) {
+      rejectMutation.mutate({ id, reason });
+    }
+  };
+
   const handleAddLine = () => {
     setLines([...lines, { accountId: 0, amount: "", isDebit: true }]);
   };
@@ -232,10 +263,43 @@ export default function JournalPage() {
               <div key={entry.id} className="p-6 hover:bg-gray-50 transition-colors">
                 <div className="flex justify-between items-start mb-4">
                   <div>
-                    <h4 className="text-md font-medium text-gray-900">{entry.description}</h4>
+                    <h4 className="text-md font-medium text-gray-900">
+                        {entry.description}
+                        <span className={`ml-3 px-2 py-0.5 text-xs rounded-full font-medium ${
+                            entry.status === 'APPROVED' ? 'bg-green-100 text-green-800' :
+                            entry.status === 'REJECTED' ? 'bg-red-100 text-red-800' :
+                            entry.status === 'VOIDED' ? 'bg-gray-100 text-gray-800' :
+                            'bg-yellow-100 text-yellow-800'
+                        }`}>
+                            {entry.status}
+                        </span>
+                    </h4>
                     <p className="text-sm text-gray-500">{new Date(entry.date).toLocaleDateString()}</p>
+                    {entry.rejectionReason && (
+                        <p className="text-xs text-red-500 mt-1">Reason: {entry.rejectionReason}</p>
+                    )}
                   </div>
-                  <span className="text-xs text-gray-400">Entry #{entry.id}</span>
+                  <div className="text-right">
+                    <span className="text-xs text-gray-400 block mb-2">Entry #{entry.id}</span>
+                    {entry.status === "PENDING" && (
+                        <div className="flex gap-2 justify-end">
+                            <button
+                                onClick={() => handleApprove(entry.id)}
+                                disabled={approveMutation.isPending}
+                                className="text-xs bg-green-50 text-green-600 border border-green-200 px-2 py-1 rounded hover:bg-green-100 transition-colors"
+                            >
+                                Approve
+                            </button>
+                            <button
+                                onClick={() => handleReject(entry.id)}
+                                disabled={rejectMutation.isPending}
+                                className="text-xs bg-red-50 text-red-600 border border-red-200 px-2 py-1 rounded hover:bg-red-100 transition-colors"
+                            >
+                                Reject
+                            </button>
+                        </div>
+                    )}
+                  </div>
                 </div>
 
                 <table className="min-w-full text-sm">
