@@ -7,7 +7,7 @@ export const journalRouter = createTRPCRouter({
     .input(
       z.object({
         date: z.date(),
-        description: z.string().min(1),
+        description: z.string().min(1).max(255),
         lines: z
           .array(
             z.object({
@@ -108,7 +108,7 @@ export const journalRouter = createTRPCRouter({
     }),
 
   reject: publicProcedure
-    .input(z.object({ id: z.number(), reason: z.string().min(1) }))
+    .input(z.object({ id: z.number(), reason: z.string().min(1).max(255) }))
     .mutation(async ({ ctx, input }) => {
       const entry = await ctx.db.journalEntry.findUnique({
         where: { id: input.id },
