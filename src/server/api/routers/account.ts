@@ -6,8 +6,8 @@ export const accountRouter = createTRPCRouter({
   create: publicProcedure
     .input(
       z.object({
-        code: z.string().min(1),
-        name: z.string().min(1),
+        code: z.string().min(1).max(50),
+        name: z.string().min(1).max(255),
         type: z.nativeEnum(AccountType),
       }),
     )
