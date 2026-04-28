@@ -154,8 +154,62 @@ exports.Prisma.JournalEntryLineScalarFieldEnum = {
   id: 'id',
   journalEntryId: 'journalEntryId',
   accountId: 'accountId',
+  costCenterId: 'costCenterId',
   amount: 'amount',
   isDebit: 'isDebit'
+};
+
+exports.Prisma.AuditLogScalarFieldEnum = {
+  id: 'id',
+  action: 'action',
+  entityId: 'entityId',
+  entityType: 'entityType',
+  userId: 'userId',
+  details: 'details',
+  createdAt: 'createdAt'
+};
+
+exports.Prisma.ContactScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  type: 'type',
+  email: 'email',
+  phone: 'phone',
+  address: 'address',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.InvoiceScalarFieldEnum = {
+  id: 'id',
+  invoiceNo: 'invoiceNo',
+  type: 'type',
+  contactId: 'contactId',
+  date: 'date',
+  dueDate: 'dueDate',
+  status: 'status',
+  totalAmount: 'totalAmount',
+  notes: 'notes',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.CostCenterScalarFieldEnum = {
+  id: 'id',
+  code: 'code',
+  name: 'name',
+  isActive: 'isActive',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.UserScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  email: 'email',
+  role: 'role',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
 };
 
 exports.Prisma.SortOrder = {
@@ -188,11 +242,40 @@ exports.JournalEntryStatus = exports.$Enums.JournalEntryStatus = {
   VOIDED: 'VOIDED'
 };
 
+exports.ContactType = exports.$Enums.ContactType = {
+  CUSTOMER: 'CUSTOMER',
+  VENDOR: 'VENDOR'
+};
+
+exports.InvoiceType = exports.$Enums.InvoiceType = {
+  RECEIVABLE: 'RECEIVABLE',
+  PAYABLE: 'PAYABLE'
+};
+
+exports.InvoiceStatus = exports.$Enums.InvoiceStatus = {
+  DRAFT: 'DRAFT',
+  OPEN: 'OPEN',
+  PAID: 'PAID',
+  VOID: 'VOID'
+};
+
+exports.Role = exports.$Enums.Role = {
+  DATA_ENTRY: 'DATA_ENTRY',
+  MANAGER: 'MANAGER',
+  CONTROLLER: 'CONTROLLER',
+  ADMIN: 'ADMIN'
+};
+
 exports.Prisma.ModelName = {
   Account: 'Account',
   AccountingPeriod: 'AccountingPeriod',
   JournalEntry: 'JournalEntry',
-  JournalEntryLine: 'JournalEntryLine'
+  JournalEntryLine: 'JournalEntryLine',
+  AuditLog: 'AuditLog',
+  Contact: 'Contact',
+  Invoice: 'Invoice',
+  CostCenter: 'CostCenter',
+  User: 'User'
 };
 
 /**

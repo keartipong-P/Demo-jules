@@ -1,0 +1,15 @@
+
+> accapp@0.1.0 start
+> next start
+
+   ▲ Next.js 15.5.15
+   - Local:        http://localhost:3000
+   - Network:      http://192.168.0.2:3000
+
+ ✓ Starting...
+ ✓ Ready in 942ms
+[TRPC] costCenters.getAll took 171ms to execute
+[TRPC] costCenters.getAll took 26ms to execute
+[TRPC] reports.getIncomeStatement took 34ms to execute
+[TRPC] reports.getBalanceSheet took 23ms to execute
+[TRPC] reports.getAgingReport took 19ms to execute

@@ -126,8 +126,62 @@ exports.Prisma.JournalEntryLineScalarFieldEnum = {
   id: 'id',
   journalEntryId: 'journalEntryId',
   accountId: 'accountId',
+  costCenterId: 'costCenterId',
   amount: 'amount',
   isDebit: 'isDebit'
+};
+
+exports.Prisma.AuditLogScalarFieldEnum = {
+  id: 'id',
+  action: 'action',
+  entityId: 'entityId',
+  entityType: 'entityType',
+  userId: 'userId',
+  details: 'details',
+  createdAt: 'createdAt'
+};
+
+exports.Prisma.ContactScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  type: 'type',
+  email: 'email',
+  phone: 'phone',
+  address: 'address',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.InvoiceScalarFieldEnum = {
+  id: 'id',
+  invoiceNo: 'invoiceNo',
+  type: 'type',
+  contactId: 'contactId',
+  date: 'date',
+  dueDate: 'dueDate',
+  status: 'status',
+  totalAmount: 'totalAmount',
+  notes: 'notes',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.CostCenterScalarFieldEnum = {
+  id: 'id',
+  code: 'code',
+  name: 'name',
+  isActive: 'isActive',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.UserScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  email: 'email',
+  role: 'role',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
 };
 
 exports.Prisma.SortOrder = {
@@ -160,11 +214,40 @@ exports.JournalEntryStatus = exports.$Enums.JournalEntryStatus = {
   VOIDED: 'VOIDED'
 };
 
+exports.ContactType = exports.$Enums.ContactType = {
+  CUSTOMER: 'CUSTOMER',
+  VENDOR: 'VENDOR'
+};
+
+exports.InvoiceStatus = exports.$Enums.InvoiceStatus = {
+  DRAFT: 'DRAFT',
+  OPEN: 'OPEN',
+  PAID: 'PAID',
+  VOID: 'VOID'
+};
+
+exports.InvoiceType = exports.$Enums.InvoiceType = {
+  RECEIVABLE: 'RECEIVABLE',
+  PAYABLE: 'PAYABLE'
+};
+
+exports.Role = exports.$Enums.Role = {
+  DATA_ENTRY: 'DATA_ENTRY',
+  MANAGER: 'MANAGER',
+  CONTROLLER: 'CONTROLLER',
+  ADMIN: 'ADMIN'
+};
+
 exports.Prisma.ModelName = {
   Account: 'Account',
   AccountingPeriod: 'AccountingPeriod',
   JournalEntry: 'JournalEntry',
-  JournalEntryLine: 'JournalEntryLine'
+  JournalEntryLine: 'JournalEntryLine',
+  AuditLog: 'AuditLog',
+  Contact: 'Contact',
+  Invoice: 'Invoice',
+  CostCenter: 'CostCenter',
+  User: 'User'
 };
 /**
  * Create the Client
@@ -214,13 +297,13 @@ const config = {
       }
     }
   },
-  "inlineSchema": "// This is your Prisma schema file,\n// learn more about it in the docs: https://pris.ly/d/prisma-schema\n\ngenerator client {\n  provider = \"prisma-client-js\"\n  output   = \"../generated/prisma\"\n}\n\ndatasource db {\n  provider = \"postgresql\"\n  url      = env(\"DATABASE_URL\")\n}\n\nmodel Account {\n  id        Int         @id @default(autoincrement())\n  code      String      @unique // e.g. \"1000\", \"2000\"\n  name      String // e.g. \"Cash\", \"Accounts Payable\"\n  type      AccountType // Asset, Liability, Equity, Revenue, Expense\n  createdAt DateTime    @default(now())\n  updatedAt DateTime    @updatedAt\n\n  lines JournalEntryLine[]\n\n  @@index([code])\n}\n\nenum AccountType {\n  ASSET\n  LIABILITY\n  EQUITY\n  REVENUE\n  EXPENSE\n}\n\nenum JournalEntryStatus {\n  DRAFT\n  PENDING\n  APPROVED\n  REJECTED\n  VOIDED\n}\n\nmodel AccountingPeriod {\n  id        Int      @id @default(autoincrement())\n  name      String // e.g. \"January 2024\"\n  startDate DateTime\n  endDate   DateTime\n  isClosed  Boolean  @default(false)\n  createdAt DateTime @default(now())\n  updatedAt DateTime @updatedAt\n}\n\nmodel JournalEntry {\n  id              Int                @id @default(autoincrement())\n  date            DateTime\n  description     String\n  status          JournalEntryStatus @default(PENDING)\n  rejectionReason String?\n  createdAt       DateTime           @default(now())\n  updatedAt       DateTime           @updatedAt\n\n  lines JournalEntryLine[]\n}\n\nmodel JournalEntryLine {\n  id             Int     @id @default(autoincrement())\n  journalEntryId Int\n  accountId      Int\n  amount         Float // Positive for debit, negative for credit (or separate fields, here we use one for simplicity or separate debit/credit fields. Let's use separate for better accounting practice).\n  isDebit        Boolean // True if debit, False if credit\n\n  journalEntry JournalEntry @relation(fields: [journalEntryId], references: [id], onDelete: Cascade)\n  account      Account      @relation(fields: [accountId], references: [id])\n}\n",
-  "inlineSchemaHash": "390eb8ae400ad40b163ad17c5e998a0c043ae44db950e04e656f6ac31028835d",
+  "inlineSchema": "// This is your Prisma schema file,\n// learn more about it in the docs: https://pris.ly/d/prisma-schema\n\ngenerator client {\n  provider = \"prisma-client-js\"\n  output   = \"../generated/prisma\"\n}\n\ndatasource db {\n  provider = \"postgresql\"\n  url      = env(\"DATABASE_URL\")\n}\n\nmodel Account {\n  id        Int         @id @default(autoincrement())\n  code      String      @unique // e.g. \"1000\", \"2000\"\n  name      String // e.g. \"Cash\", \"Accounts Payable\"\n  type      AccountType // Asset, Liability, Equity, Revenue, Expense\n  createdAt DateTime    @default(now())\n  updatedAt DateTime    @updatedAt\n\n  lines JournalEntryLine[]\n\n  @@index([code])\n}\n\nenum AccountType {\n  ASSET\n  LIABILITY\n  EQUITY\n  REVENUE\n  EXPENSE\n}\n\nenum JournalEntryStatus {\n  DRAFT\n  PENDING\n  APPROVED\n  REJECTED\n  VOIDED\n}\n\nmodel AccountingPeriod {\n  id        Int      @id @default(autoincrement())\n  name      String // e.g. \"January 2024\"\n  startDate DateTime\n  endDate   DateTime\n  isClosed  Boolean  @default(false)\n  createdAt DateTime @default(now())\n  updatedAt DateTime @updatedAt\n}\n\nmodel JournalEntry {\n  id              Int                @id @default(autoincrement())\n  date            DateTime\n  description     String\n  status          JournalEntryStatus @default(PENDING)\n  rejectionReason String?\n  createdAt       DateTime           @default(now())\n  updatedAt       DateTime           @updatedAt\n\n  lines JournalEntryLine[]\n}\n\nmodel JournalEntryLine {\n  id             Int     @id @default(autoincrement())\n  journalEntryId Int\n  accountId      Int\n  costCenterId   Int?\n  amount         Float // Positive for debit, negative for credit (or separate fields, here we use one for simplicity or separate debit/credit fields. Let's use separate for better accounting practice).\n  isDebit        Boolean // True if debit, False if credit\n\n  journalEntry JournalEntry @relation(fields: [journalEntryId], references: [id], onDelete: Cascade)\n  account      Account      @relation(fields: [accountId], references: [id])\n  costCenter   CostCenter?  @relation(fields: [costCenterId], references: [id])\n}\n\nmodel AuditLog {\n  id         Int      @id @default(autoincrement())\n  action     String // e.g. \"APPROVE_JOURNAL\", \"CREATE_JOURNAL\", \"CLOSE_PERIOD\"\n  entityId   Int // ID of the affected entity\n  entityType String // e.g. \"JournalEntry\", \"AccountingPeriod\"\n  userId     String? // If we had authentication, this would be the user ID. Using \"System\" or Maker/Checker for now.\n  details    String? // JSON string or text for extra info\n  createdAt  DateTime @default(now())\n}\n\nenum ContactType {\n  CUSTOMER\n  VENDOR\n}\n\nmodel Contact {\n  id        Int         @id @default(autoincrement())\n  name      String\n  type      ContactType\n  email     String?\n  phone     String?\n  address   String?\n  createdAt DateTime    @default(now())\n  updatedAt DateTime    @updatedAt\n\n  invoices Invoice[]\n}\n\nenum InvoiceStatus {\n  DRAFT\n  OPEN\n  PAID\n  VOID\n}\n\nenum InvoiceType {\n  RECEIVABLE // AR\n  PAYABLE // AP\n}\n\nmodel Invoice {\n  id          Int           @id @default(autoincrement())\n  invoiceNo   String        @unique\n  type        InvoiceType\n  contactId   Int\n  date        DateTime\n  dueDate     DateTime\n  status      InvoiceStatus @default(DRAFT)\n  totalAmount Float\n  notes       String?\n  createdAt   DateTime      @default(now())\n  updatedAt   DateTime      @updatedAt\n\n  contact Contact @relation(fields: [contactId], references: [id])\n}\n\nmodel CostCenter {\n  id        Int      @id @default(autoincrement())\n  code      String   @unique // e.g. \"CC-100\", \"DEPT-SALES\"\n  name      String // e.g. \"Sales Department\", \"Bangkok Branch\"\n  isActive  Boolean  @default(true)\n  createdAt DateTime @default(now())\n  updatedAt DateTime @updatedAt\n\n  lines JournalEntryLine[]\n}\n\nenum Role {\n  DATA_ENTRY\n  MANAGER\n  CONTROLLER\n  ADMIN\n}\n\nmodel User {\n  id        String   @id @default(cuid())\n  name      String?\n  email     String   @unique\n  role      Role     @default(DATA_ENTRY)\n  createdAt DateTime @default(now())\n  updatedAt DateTime @updatedAt\n}\n",
+  "inlineSchemaHash": "8c09e75f5e1071fb7fd5686c3b3a58612207fdc85b728a131bc9f144715fd4a3",
   "copyEngine": true
 }
 config.dirname = '/'
 
-config.runtimeDataModel = JSON.parse("{\"models\":{\"Account\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"code\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"name\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"type\",\"kind\":\"enum\",\"type\":\"AccountType\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"lines\",\"kind\":\"object\",\"type\":\"JournalEntryLine\",\"relationName\":\"AccountToJournalEntryLine\"}],\"dbName\":null},\"AccountingPeriod\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"name\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"startDate\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"endDate\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"isClosed\",\"kind\":\"scalar\",\"type\":\"Boolean\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":null},\"JournalEntry\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"date\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"description\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"status\",\"kind\":\"enum\",\"type\":\"JournalEntryStatus\"},{\"name\":\"rejectionReason\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"lines\",\"kind\":\"object\",\"type\":\"JournalEntryLine\",\"relationName\":\"JournalEntryToJournalEntryLine\"}],\"dbName\":null},\"JournalEntryLine\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"journalEntryId\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"accountId\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"amount\",\"kind\":\"scalar\",\"type\":\"Float\"},{\"name\":\"isDebit\",\"kind\":\"scalar\",\"type\":\"Boolean\"},{\"name\":\"journalEntry\",\"kind\":\"object\",\"type\":\"JournalEntry\",\"relationName\":\"JournalEntryToJournalEntryLine\"},{\"name\":\"account\",\"kind\":\"object\",\"type\":\"Account\",\"relationName\":\"AccountToJournalEntryLine\"}],\"dbName\":null}},\"enums\":{},\"types\":{}}")
+config.runtimeDataModel = JSON.parse("{\"models\":{\"Account\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"code\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"name\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"type\",\"kind\":\"enum\",\"type\":\"AccountType\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"lines\",\"kind\":\"object\",\"type\":\"JournalEntryLine\",\"relationName\":\"AccountToJournalEntryLine\"}],\"dbName\":null},\"AccountingPeriod\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"name\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"startDate\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"endDate\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"isClosed\",\"kind\":\"scalar\",\"type\":\"Boolean\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":null},\"JournalEntry\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"date\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"description\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"status\",\"kind\":\"enum\",\"type\":\"JournalEntryStatus\"},{\"name\":\"rejectionReason\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"lines\",\"kind\":\"object\",\"type\":\"JournalEntryLine\",\"relationName\":\"JournalEntryToJournalEntryLine\"}],\"dbName\":null},\"JournalEntryLine\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"journalEntryId\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"accountId\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"costCenterId\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"amount\",\"kind\":\"scalar\",\"type\":\"Float\"},{\"name\":\"isDebit\",\"kind\":\"scalar\",\"type\":\"Boolean\"},{\"name\":\"journalEntry\",\"kind\":\"object\",\"type\":\"JournalEntry\",\"relationName\":\"JournalEntryToJournalEntryLine\"},{\"name\":\"account\",\"kind\":\"object\",\"type\":\"Account\",\"relationName\":\"AccountToJournalEntryLine\"},{\"name\":\"costCenter\",\"kind\":\"object\",\"type\":\"CostCenter\",\"relationName\":\"CostCenterToJournalEntryLine\"}],\"dbName\":null},\"AuditLog\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"action\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"entityId\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"entityType\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"userId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"details\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":null},\"Contact\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"name\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"type\",\"kind\":\"enum\",\"type\":\"ContactType\"},{\"name\":\"email\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"phone\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"address\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"invoices\",\"kind\":\"object\",\"type\":\"Invoice\",\"relationName\":\"ContactToInvoice\"}],\"dbName\":null},\"Invoice\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"invoiceNo\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"type\",\"kind\":\"enum\",\"type\":\"InvoiceType\"},{\"name\":\"contactId\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"date\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"dueDate\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"status\",\"kind\":\"enum\",\"type\":\"InvoiceStatus\"},{\"name\":\"totalAmount\",\"kind\":\"scalar\",\"type\":\"Float\"},{\"name\":\"notes\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"contact\",\"kind\":\"object\",\"type\":\"Contact\",\"relationName\":\"ContactToInvoice\"}],\"dbName\":null},\"CostCenter\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"code\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"name\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"isActive\",\"kind\":\"scalar\",\"type\":\"Boolean\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"lines\",\"kind\":\"object\",\"type\":\"JournalEntryLine\",\"relationName\":\"CostCenterToJournalEntryLine\"}],\"dbName\":null},\"User\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"name\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"email\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"role\",\"kind\":\"enum\",\"type\":\"Role\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":null}},\"enums\":{},\"types\":{}}")
 defineDmmfProperty(exports.Prisma, config.runtimeDataModel)
 config.engineWasm = {
   getRuntime: async () => require('./query_engine_bg.js'),
