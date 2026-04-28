@@ -20,14 +20,24 @@ export const reportsRouter = createTRPCRouter({
         where: whereClause,
       });
 
+      const linesByAccount = lines.reduce((acc, line) => {
+        const accountId = line.accountId;
+        if (!acc[accountId]) {
+          acc[accountId] = { totalDebit: 0, totalCredit: 0 };
+        }
+        if (line.isDebit) {
+          acc[accountId]!.totalDebit += line.amount;
+        } else {
+          acc[accountId]!.totalCredit += line.amount;
+        }
+        return acc;
+      }, {} as Record<number, { totalDebit: number; totalCredit: number }>);
+
       const balances = accounts.map((acc) => {
-        const accountLines = lines.filter((l) => l.accountId === acc.id);
-        const totalDebit = accountLines
-          .filter((l) => l.isDebit)
-          .reduce((sum, l) => sum + l.amount, 0);
-        const totalCredit = accountLines
-          .filter((l) => !l.isDebit)
-          .reduce((sum, l) => sum + l.amount, 0);
+        const { totalDebit, totalCredit } = linesByAccount[acc.id] ?? {
+          totalDebit: 0,
+          totalCredit: 0,
+        };
 
         let balance = 0;
         let isDebitBalance = true;
