@@ -1,6 +1,10 @@
 import { z } from "zod";
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
-import { AccountType } from "../../../../generated/prisma";
+import {
+  AccountType,
+  JournalEntryStatus,
+  type Prisma,
+} from "../../../../generated/prisma";
 
 export const reportsRouter = createTRPCRouter({
   getTrialBalance: publicProcedure
@@ -10,13 +14,14 @@ export const reportsRouter = createTRPCRouter({
         orderBy: { code: "asc" },
       });
 
-      const baseWhereClause = { journalEntry: { status: "APPROVED" } };
-      const whereClause = input.asOfDate
-        ? { ...baseWhereClause, journalEntry: { ...baseWhereClause.journalEntry, date: { lte: input.asOfDate } } }
-        : baseWhereClause;
+      const whereClause: Prisma.JournalEntryLineWhereInput = {
+        journalEntry: {
+          status: JournalEntryStatus.APPROVED,
+          ...(input.asOfDate ? { date: { lte: input.asOfDate } } : {}),
+        },
+      };
 
       const lines = await ctx.db.journalEntryLine.findMany({
-        // @ts-ignore
         where: whereClause,
       });
 
@@ -72,13 +77,20 @@ export const reportsRouter = createTRPCRouter({
         throw new Error("Account not found");
       }
 
-      const whereClause: any = { accountId: input.accountId, journalEntry: { status: "APPROVED" } };
-
-      if (input.startDate || input.endDate) {
-          whereClause.journalEntry.date = {};
-          if (input.startDate) whereClause.journalEntry.date.gte = input.startDate;
-          if (input.endDate) whereClause.journalEntry.date.lte = input.endDate;
-      }
+      const whereClause: Prisma.JournalEntryLineWhereInput = {
+        accountId: input.accountId,
+        journalEntry: {
+          status: JournalEntryStatus.APPROVED,
+          ...(input.startDate || input.endDate
+            ? {
+                date: {
+                  ...(input.startDate ? { gte: input.startDate } : {}),
+                  ...(input.endDate ? { lte: input.endDate } : {}),
+                },
+              }
+            : {}),
+        },
+      };
 
       const lines = await ctx.db.journalEntryLine.findMany({
         where: whereClause,
