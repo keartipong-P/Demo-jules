@@ -66,11 +66,13 @@ model JournalEntryLine {
     id             Int      @id @default(autoincrement())
     journalEntryId Int
     accountId      Int
+    costCenterId   Int?
     amount         Float    // Positive for debit, negative for credit (or separate fields, here we use one for simplicity or separate debit/credit fields. Let's use separate for better accounting practice).
     isDebit        Boolean  // True if debit, False if credit
 
     journalEntry   JournalEntry @relation(fields: [journalEntryId], references: [id], onDelete: Cascade)
     account        Account      @relation(fields: [accountId], references: [id])
+    costCenter     CostCenter?  @relation(fields: [costCenterId], references: [id])
 }
 
 model AuditLog {
@@ -81,4 +83,77 @@ model AuditLog {
     userId    String?  // If we had authentication, this would be the user ID. Using "System" or Maker/Checker for now.
     details   String?  // JSON string or text for extra info
     createdAt DateTime @default(now())
+}
+
+enum ContactType {
+    CUSTOMER
+    VENDOR
+}
+
+model Contact {
+    id        Int      @id @default(autoincrement())
+    name      String
+    type      ContactType
+    email     String?
+    phone     String?
+    address   String?
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    invoices  Invoice[]
+}
+
+enum InvoiceStatus {
+    DRAFT
+    OPEN
+    PAID
+    VOID
+}
+
+enum InvoiceType {
+    RECEIVABLE // AR
+    PAYABLE    // AP
+}
+
+model Invoice {
+    id          Int      @id @default(autoincrement())
+    invoiceNo   String   @unique
+    type        InvoiceType
+    contactId   Int
+    date        DateTime
+    dueDate     DateTime
+    status      InvoiceStatus @default(DRAFT)
+    totalAmount Float
+    notes       String?
+    createdAt   DateTime @default(now())
+    updatedAt   DateTime @updatedAt
+
+    contact     Contact  @relation(fields: [contactId], references: [id])
+}
+
+model CostCenter {
+    id        Int      @id @default(autoincrement())
+    code      String   @unique // e.g. "CC-100", "DEPT-SALES"
+    name      String   // e.g. "Sales Department", "Bangkok Branch"
+    isActive  Boolean  @default(true)
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    lines     JournalEntryLine[]
+}
+
+enum Role {
+    DATA_ENTRY
+    MANAGER
+    CONTROLLER
+    ADMIN
+}
+
+model User {
+    id        String   @id @default(cuid())
+    name      String?
+    email     String   @unique
+    role      Role     @default(DATA_ENTRY)
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
 }

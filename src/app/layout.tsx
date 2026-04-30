@@ -50,6 +50,48 @@ export default function RootLayout({
               >
                 Journal Entries
               </Link>
+              <div className="pt-4 pb-1">
+                <p className="px-4 text-xs font-semibold text-gray-500 uppercase tracking-wider">Reports</p>
+              </div>
+              <Link
+                href="/reports/trial-balance"
+                className="block px-4 py-2 rounded-md hover:bg-indigo-50 hover:text-indigo-600 font-medium transition-colors"
+              >
+                Trial Balance
+              </Link>
+              <Link
+                href="/reports/general-ledger"
+                className="block px-4 py-2 rounded-md hover:bg-indigo-50 hover:text-indigo-600 font-medium transition-colors"
+              >
+                General Ledger
+              </Link>
+              <Link
+                href="/reports/income-statement"
+                className="block px-4 py-2 rounded-md hover:bg-indigo-50 hover:text-indigo-600 font-medium transition-colors"
+              >
+                Income Statement
+              </Link>
+              <Link
+                href="/reports/balance-sheet"
+                className="block px-4 py-2 rounded-md hover:bg-indigo-50 hover:text-indigo-600 font-medium transition-colors"
+              >
+                Balance Sheet
+              </Link>
+              <Link
+                href="/reports/aging"
+                className="block px-4 py-2 rounded-md hover:bg-indigo-50 hover:text-indigo-600 font-medium transition-colors"
+              >
+                Aging Report
+              </Link>
+              <div className="pt-4 pb-1">
+                <p className="px-4 text-xs font-semibold text-gray-500 uppercase tracking-wider">Setup</p>
+              </div>
+              <Link
+                href="/cost-centers"
+                className="block px-4 py-2 rounded-md hover:bg-indigo-50 hover:text-indigo-600 font-medium transition-colors"
+              >
+                Cost Centers
+              </Link>
             </nav>
             <div className="p-4 border-t border-gray-200">
               <p className="text-xs text-gray-400 text-center">
