@@ -2,6 +2,9 @@
 
 import { useState } from "react";
 import { api } from "~/trpc/react";
+import Link from "next/link";
+import * as XLSX from "xlsx";
+import { saveAs } from "file-saver";
 
 export default function IncomeStatementPage() {
   const [startDate, setStartDate] = useState("2026-01-01");
@@ -16,9 +19,47 @@ export default function IncomeStatementPage() {
     costCenterId: costCenterId,
   });
 
+  const downloadExcel = () => {
+    if (!report) return;
+
+    const rows: any[] = [];
+    rows.push({ Account: "Revenues" });
+    report.revenues.forEach(r => {
+      rows.push({ "Account Code": r.account.code, "Account Name": r.account.name, Balance: r.balance });
+    });
+    rows.push({ Account: "Total Revenue", Balance: report.totalRevenue });
+
+    rows.push({});
+    rows.push({ Account: "Expenses" });
+    report.expenses.forEach(e => {
+      rows.push({ "Account Code": e.account.code, "Account Name": e.account.name, Balance: e.balance });
+    });
+    rows.push({ Account: "Total Expenses", Balance: report.totalExpense });
+
+    rows.push({});
+    rows.push({ Account: "Net Income", Balance: report.netIncome });
+
+    const worksheet = XLSX.utils.json_to_sheet(rows);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Income Statement");
+    const excelBuffer = XLSX.write(workbook, { bookType: "xlsx", type: "array" });
+    const blob = new Blob([excelBuffer], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8" });
+    saveAs(blob, `income_statement_${startDate}_to_${endDate}.xlsx`);
+  };
+
   return (
     <main className="p-8">
-      <h1 className="mb-8 text-3xl font-bold">Income Statement (P&L)</h1>
+      <div className="flex justify-between items-center mb-8">
+        <h1 className="text-3xl font-bold">Income Statement (P&L)</h1>
+        <button
+          onClick={downloadExcel}
+          disabled={!report}
+          className="bg-green-600 text-white py-2 px-4 rounded-md hover:bg-green-700 disabled:opacity-50 transition-colors flex items-center gap-2"
+        >
+          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+          Export Excel
+        </button>
+      </div>
 
       <div className="mb-6 flex gap-4 bg-white p-4 rounded border">
         <div>
@@ -64,7 +105,11 @@ export default function IncomeStatementPage() {
               <tbody>
                 {report.revenues.map(item => (
                   <tr key={item.account.id}>
-                    <td className="py-1 text-gray-700">{item.account.code} - {item.account.name}</td>
+                    <td className="py-1 text-gray-700">
+                      <Link href={`/reports/general-ledger?accountId=${item.account.id}`} className="hover:text-indigo-600 hover:underline">
+                        {item.account.code} - {item.account.name}
+                      </Link>
+                    </td>
                     <td className="py-1 text-right text-gray-900">${item.balance.toFixed(2)}</td>
                   </tr>
                 ))}
@@ -82,7 +127,11 @@ export default function IncomeStatementPage() {
               <tbody>
                 {report.expenses.map(item => (
                   <tr key={item.account.id}>
-                    <td className="py-1 text-gray-700">{item.account.code} - {item.account.name}</td>
+                    <td className="py-1 text-gray-700">
+                      <Link href={`/reports/general-ledger?accountId=${item.account.id}`} className="hover:text-indigo-600 hover:underline">
+                        {item.account.code} - {item.account.name}
+                      </Link>
+                    </td>
                     <td className="py-1 text-right text-gray-900">${item.balance.toFixed(2)}</td>
                   </tr>
                 ))}

@@ -2,6 +2,9 @@
 
 import { api } from "~/trpc/react";
 import { useState } from "react";
+import Link from "next/link";
+import * as XLSX from "xlsx";
+import { saveAs } from "file-saver";
 
 export default function TrialBalancePage() {
   const [asOfDate, setAsOfDate] = useState(() => new Date().toISOString().split("T")[0]);
@@ -9,30 +12,22 @@ export default function TrialBalancePage() {
       asOfDate: asOfDate ? new Date(asOfDate) : undefined
   });
 
-  const downloadCSV = () => {
+  const downloadExcel = () => {
     if (!trialBalanceQuery.data) return;
 
-    const headers = ["Account Code", "Account Name", "Debit", "Credit"];
-    const rows = trialBalanceQuery.data.map(row => [
-      row.account.code,
-      row.account.name,
-      row.debit.toFixed(2),
-      row.credit.toFixed(2)
-    ]);
+    const rows = trialBalanceQuery.data.map(row => ({
+      "Account Code": row.account.code,
+      "Account Name": row.account.name,
+      "Debit": row.debit,
+      "Credit": row.credit
+    }));
 
-    const csvContent = [
-      headers.join(","),
-      ...rows.map(e => e.join(","))
-    ].join("\n");
-
-    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement("a");
-    link.setAttribute("href", url);
-    link.setAttribute("download", `trial_balance_${asOfDate}.csv`);
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+    const worksheet = XLSX.utils.json_to_sheet(rows);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Trial Balance");
+    const excelBuffer = XLSX.write(workbook, { bookType: "xlsx", type: "array" });
+    const blob = new Blob([excelBuffer], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8" });
+    saveAs(blob, `trial_balance_${asOfDate}.xlsx`);
   };
 
   const totalDebit = trialBalanceQuery.data?.reduce((sum, row) => sum + row.debit, 0) || 0;
@@ -56,11 +51,11 @@ export default function TrialBalancePage() {
                 />
             </div>
             <button
-                onClick={downloadCSV}
+                onClick={downloadExcel}
                 disabled={!trialBalanceQuery.data || trialBalanceQuery.data.length === 0}
                 className="mt-6 bg-indigo-600 text-white py-2 px-4 rounded-md hover:bg-indigo-700 disabled:opacity-50 transition-colors"
             >
-                Download CSV
+                Export Excel
             </button>
         </div>
       </div>
@@ -87,8 +82,10 @@ export default function TrialBalancePage() {
               trialBalanceQuery.data?.map((row) => (
                 <tr key={row.account.id} className="hover:bg-gray-50">
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                    <span className="font-medium mr-2">{row.account.code}</span>
-                    {row.account.name}
+                    <Link href={`/reports/general-ledger?accountId=${row.account.id}`} className="hover:text-indigo-600 hover:underline">
+                      <span className="font-medium mr-2">{row.account.code}</span>
+                      {row.account.name}
+                    </Link>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 text-right">
                     {row.debit > 0 ? row.debit.toFixed(2) : ""}

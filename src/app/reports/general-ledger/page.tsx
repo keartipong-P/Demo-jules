@@ -1,10 +1,23 @@
 "use client";
 
 import { api } from "~/trpc/react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import * as XLSX from "xlsx";
+import { saveAs } from "file-saver";
+import { useSearchParams } from "next/navigation";
 
-export default function GeneralLedgerPage() {
+import { Suspense } from "react";
+
+function GeneralLedgerContent() {
+  const searchParams = useSearchParams();
   const [accountId, setAccountId] = useState<number | "">("");
+
+  useEffect(() => {
+    const idParam = searchParams.get("accountId");
+    if (idParam) {
+      setAccountId(Number(idParam));
+    }
+  }, [searchParams]);
 
   const accountsQuery = api.account.getAll.useQuery();
   const ledgerQuery = api.reports.getGeneralLedger.useQuery(
@@ -12,31 +25,24 @@ export default function GeneralLedgerPage() {
     { enabled: accountId !== "" }
   );
 
-  const downloadCSV = () => {
+  const downloadExcel = () => {
     if (!ledgerQuery.data) return;
 
     const headers = ["Date", "Description", "Debit", "Credit", "Balance"];
-    const rows = ledgerQuery.data.entries.map(row => [
-      new Date(row.date).toLocaleDateString(),
-      row.description,
-      row.debit.toFixed(2),
-      row.credit.toFixed(2),
-      row.balance.toFixed(2)
-    ]);
+    const rows = ledgerQuery.data.entries.map(row => ({
+      Date: new Date(row.date).toLocaleDateString(),
+      Description: row.description,
+      Debit: row.debit,
+      Credit: row.credit,
+      Balance: row.balance
+    }));
 
-    const csvContent = [
-      headers.join(","),
-      ...rows.map(e => e.map(cell => `"${cell}"`).join(",")) // escape commas in description
-    ].join("\n");
-
-    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement("a");
-    link.setAttribute("href", url);
-    link.setAttribute("download", `general_ledger_${ledgerQuery.data.account.code}.csv`);
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+    const worksheet = XLSX.utils.json_to_sheet(rows);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "General Ledger");
+    const excelBuffer = XLSX.write(workbook, { bookType: "xlsx", type: "array" });
+    const blob = new Blob([excelBuffer], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8" });
+    saveAs(blob, `general_ledger_${ledgerQuery.data.account.code}.xlsx`);
   };
 
   return (
@@ -65,11 +71,11 @@ export default function GeneralLedgerPage() {
             </div>
 
             <button
-                onClick={downloadCSV}
+                onClick={downloadExcel}
                 disabled={!ledgerQuery.data || ledgerQuery.data.entries.length === 0}
                 className="bg-indigo-600 text-white py-2 px-4 rounded-md hover:bg-indigo-700 disabled:opacity-50 transition-colors"
             >
-                Download CSV
+                Export Excel
             </button>
         </div>
       </div>
@@ -135,5 +141,13 @@ export default function GeneralLedgerPage() {
          )}
       </div>
     </div>
+  );
+}
+
+export default function GeneralLedgerPage() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <GeneralLedgerContent />
+    </Suspense>
   );
 }

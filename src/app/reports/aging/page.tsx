@@ -2,6 +2,8 @@
 
 import { useState } from "react";
 import { api } from "~/trpc/react";
+import * as XLSX from "xlsx";
+import { saveAs } from "file-saver";
 
 export default function AgingReportPage() {
   const [type, setType] = useState<"RECEIVABLE" | "PAYABLE">("RECEIVABLE");
@@ -12,9 +14,50 @@ export default function AgingReportPage() {
     asOfDate: new Date(asOfDate),
   });
 
+  const downloadExcel = () => {
+    if (!report) return;
+
+    const rows = report.details.map((row: any) => ({
+      Contact: row.contact.name,
+      Current: row.current,
+      "1 - 30 Days": row.days30,
+      "31 - 60 Days": row.days60,
+      "61 - 90 Days": row.days90,
+      "> 90 Days": row.older,
+      Total: row.total,
+    }));
+
+    rows.push({
+      Contact: "Grand Total",
+      Current: report.summary.current,
+      "1 - 30 Days": report.summary.days30,
+      "31 - 60 Days": report.summary.days60,
+      "61 - 90 Days": report.summary.days90,
+      "> 90 Days": report.summary.older,
+      Total: report.summary.current + report.summary.days30 + report.summary.days60 + report.summary.days90 + report.summary.older,
+    });
+
+    const worksheet = XLSX.utils.json_to_sheet(rows);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Aging Report");
+    const excelBuffer = XLSX.write(workbook, { bookType: "xlsx", type: "array" });
+    const blob = new Blob([excelBuffer], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8" });
+    saveAs(blob, `aging_report_${type}_${asOfDate}.xlsx`);
+  };
+
   return (
     <main className="p-8">
-      <h1 className="mb-8 text-3xl font-bold">Aging Report</h1>
+      <div className="flex justify-between items-center mb-8">
+        <h1 className="text-3xl font-bold">Aging Report</h1>
+        <button
+          onClick={downloadExcel}
+          disabled={!report}
+          className="bg-green-600 text-white py-2 px-4 rounded-md hover:bg-green-700 disabled:opacity-50 transition-colors flex items-center gap-2"
+        >
+          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+          Export Excel
+        </button>
+      </div>
 
       <div className="mb-6 flex gap-4 bg-white p-4 rounded border">
         <div>
